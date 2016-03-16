@@ -91,4 +91,12 @@ public class TerrainQuadTest {
         assertEquals(parentTerrainQuad.getQuad(4), children[3]);
         assertEquals(parentTerrainQuad.getQuad(5), null);
     }
+
+    @Test
+    public void testFindRightQuad() {
+        assertEquals(children[0].findRightQuad(), children[2]);
+        assertEquals(children[1].findRightQuad(), children[3]);
+        assertEquals(children[2].findRightQuad(), null);
+        assertEquals(children[3].findRightQuad(), null);
+    }
 }
