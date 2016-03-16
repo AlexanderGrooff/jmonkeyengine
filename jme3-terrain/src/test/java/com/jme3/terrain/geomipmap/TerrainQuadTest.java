@@ -1,6 +1,8 @@
 package com.jme3.terrain.geomipmap;
 
 import static org.junit.Assert.*;
+
+import com.jme3.scene.Spatial;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,10 +28,58 @@ public class TerrainQuadTest {
         }
     }
 
+    /**
+     * Used to recursively create a nested structure of {@link Spatial}s.
+     * If nesting level is > 1, root element will be a {@link TerrainQuad}.
+     * Leafs (nesting level 0) are {@link TerrainPatch}es.
+     * @param nestLevel Nest level to be created.
+     * @return Nested structure of {@link Spatial}s
+     */
+    private Spatial createNestedQuad(int nestLevel) {
+        if (nestLevel == 0) {
+            return new TerrainPatch();
+        }
+
+        FakeTerrainQuad parent = new FakeTerrainQuad();
+        for(int i = 0; i < 4; i++) {
+            Spatial child = createNestedQuad(nestLevel - 1);
+
+            if (child instanceof TerrainPatch) {
+                TerrainPatch patchChild = (TerrainPatch) child;
+                patchChild.quadrant = (short) (i + 1);
+                parent.attachChild(patchChild);
+            } else if (child instanceof TerrainQuad) {
+                FakeTerrainQuad quadChild = (FakeTerrainQuad) child;
+                quadChild.quadrant = i + 1;
+                parent.attachChild(quadChild);
+            }
+        }
+
+        return parent;
+    }
+
     @Test
     public void testFakeTerrainQuad() {
         FakeTerrainQuad fake = new FakeTerrainQuad();
         assertEquals(fake, fake.getQuad(0));
+    }
+
+    @Test
+    public void testNestStructure() {
+        Spatial leaf = createNestedQuad(0);
+        assertTrue(leaf instanceof TerrainPatch);
+
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        assertEquals(root.getChildren().size(), 4);
+        for(int i = 0; i < 4; i++) {
+            assertTrue(root.getChild(i) instanceof TerrainPatch); // Ensure children of root are leafs
+        }
+
+        root = (FakeTerrainQuad) createNestedQuad(2);
+        assertEquals(root.getChildren().size(), 4);
+        for(int i = 0; i < 4; i++) {
+            assertTrue(root.getChild(i) instanceof TerrainQuad); // Ensure children of root are not leafs
+        }
     }
 
     @Test
