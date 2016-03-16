@@ -48,6 +48,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
+import com.jme3.system.SystemListener;
 import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculator;
@@ -369,13 +370,16 @@ public class TerrainQuad extends Node implements Terrain {
         boolean lodChanged = false;
 
         if (children != null) {
+
             for (int i = children.size(); --i >= 0;) {
                 Spatial child = children.get(i);
                 if (child instanceof TerrainQuad) {
+                    System.out.println("hier quad");
                     boolean b = ((TerrainQuad) child).calculateLod(location, updates, lodCalculator);
                     if (b)
                         lodChanged = true;
                 } else if (child instanceof TerrainPatch) {
+                    System.out.println("hier patch");
                     boolean b = lodCalculator.calculateLod((TerrainPatch) child, location, updates);
                     if (b)
                         lodChanged = true;
