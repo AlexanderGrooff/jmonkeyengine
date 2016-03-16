@@ -6,24 +6,30 @@ import org.junit.Test;
 
 public class TerrainQuadTest {
 
-    private TerrainQuad parentTerrainQuad;
-    private TerrainQuad[] children = new TerrainQuad[4];
+    private FakeTerrainQuad parentTerrainQuad;
+    private FakeTerrainQuad[] children = new FakeTerrainQuad[4];
 
     @Before
     public void init() {
         for(int i = 0; i < 4; i++) {
-            children[i] = new TerrainQuad();
+            children[i] = new FakeTerrainQuad();
         }
 
-        parentTerrainQuad = new TerrainQuad();
+        parentTerrainQuad = new FakeTerrainQuad();
         fakeCreateQuad(parentTerrainQuad, children);
     }
 
-    private void fakeCreateQuad(TerrainQuad parent, TerrainQuad[] children) {
+    private void fakeCreateQuad(FakeTerrainQuad parent, FakeTerrainQuad[] children) {
         for (int i = 0; i < children.length; i++) {
             children[i].quadrant = i + 1; // Quadrant starts counting from 1
             parent.attachChild(children[i]);
         }
+    }
+
+    @Test
+    public void testFakeTerrainQuad() {
+        FakeTerrainQuad fake = new FakeTerrainQuad();
+        assertEquals(fake, fake.getQuad(0));
     }
 
     @Test
