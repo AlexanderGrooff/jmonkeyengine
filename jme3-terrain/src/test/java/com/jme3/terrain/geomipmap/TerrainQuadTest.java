@@ -94,6 +94,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindRightQuad() {
+        assertEquals(parentTerrainQuad.findRightQuad(), null);
         assertEquals(children[0].findRightQuad(), children[2]);
         assertEquals(children[1].findRightQuad(), children[3]);
         assertEquals(children[2].findRightQuad(), null);
@@ -102,6 +103,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindDownQuad() {
+        assertEquals(parentTerrainQuad.findDownQuad(), null);
         assertEquals(children[0].findDownQuad(), children[1]);
         assertEquals(children[1].findDownQuad(), null);
         assertEquals(children[2].findDownQuad(), children[3]);
@@ -110,6 +112,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindLeftQuad() {
+        assertEquals(parentTerrainQuad.findLeftQuad(), null);
         assertEquals(children[0].findLeftQuad(), null);
         assertEquals(children[1].findLeftQuad(), null);
         assertEquals(children[2].findLeftQuad(), children[0]);
@@ -118,6 +121,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindTopQuad() {
+        assertEquals(parentTerrainQuad.findTopQuad(), null);
         assertEquals(children[0].findTopQuad(), null);
         assertEquals(children[1].findTopQuad(), children[0]);
         assertEquals(children[2].findTopQuad(), null);
