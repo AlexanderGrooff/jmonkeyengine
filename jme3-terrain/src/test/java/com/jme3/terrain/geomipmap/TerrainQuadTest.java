@@ -4,9 +4,14 @@ import static org.junit.Assert.*;
 
 import com.jme3.scene.Spatial;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class TerrainQuadTest {
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     private FakeTerrainQuad parentTerrainQuad;
     private FakeTerrainQuad[] children = new FakeTerrainQuad[4];
@@ -182,5 +187,27 @@ public class TerrainQuadTest {
         assertEquals(root.getPatch(3), root.getChild(2));
         assertEquals(root.getPatch(4), root.getChild(3));
         assertEquals(root.getPatch(5), null);
+    }
+
+    @Test
+    public void testFindRightPatch() {
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
+        FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
+
+        exception.expect(NullPointerException.class);
+        root.findRightPatch(null);
+
+        assertEquals(topLeftChild.findRightQuad(), topRightChild); // Confirm position of two parent quads
+
+        // Check quad children of parent
+        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(1)), topLeftChild.getPatch(3));
+        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(2)), topLeftChild.getPatch(4));
+        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(3)), topRightChild.getPatch(1));
+        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(4)), topRightChild.getPatch(2));
+
+        // Check non-existing neighbour quads
+        assertEquals(topRightChild.findRightPatch(topRightChild.getPatch(3)), null);
+        assertEquals(topRightChild.findRightPatch(topRightChild.getPatch(4)), null);
     }
 }
