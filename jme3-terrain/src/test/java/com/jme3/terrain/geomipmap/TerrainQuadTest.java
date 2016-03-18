@@ -181,11 +181,12 @@ public class TerrainQuadTest {
     @Test
     public void testGetPatch() {
         FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
-        assertEquals(root.getPatch(0), null);
-        assertEquals(root.getPatch(1), root.getChild(0));
-        assertEquals(root.getPatch(2), root.getChild(1));
-        assertEquals(root.getPatch(3), root.getChild(2));
-        assertEquals(root.getPatch(4), root.getChild(3));
+        assertNull(root.getPatch(0));
+        for (int i = 1; i <= 4; i++) {
+            TerrainPatch child = root.getPatch(i);
+            assertNotNull(child);
+            assertEquals(root.getChild(i - 1), child);
+        }
         assertEquals(root.getPatch(5), null);
     }
 
@@ -201,10 +202,23 @@ public class TerrainQuadTest {
         assertEquals(topLeftChild.findRightQuad(), topRightChild); // Confirm position of two parent quads
 
         // Check quad children of parent
-        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(1)), topLeftChild.getPatch(3));
-        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(2)), topLeftChild.getPatch(4));
-        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(3)), topRightChild.getPatch(1));
-        assertEquals(topLeftChild.findRightPatch(topLeftChild.getPatch(4)), topRightChild.getPatch(2));
+        TerrainPatch child1 = topLeftChild.findRightPatch(topLeftChild.getPatch(2));
+        assertNotNull(child1);
+        assertEquals(child1, topLeftChild.getPatch(3));
+
+        TerrainPatch child2 = topLeftChild.findRightPatch(topLeftChild.getPatch(2));
+        assertNotNull(child1);
+        assertEquals(child2, topLeftChild.getPatch(4));
+
+
+        TerrainPatch child3 = topLeftChild.findRightPatch(topLeftChild.getPatch(3));
+        assertNotNull(child3);
+        assertEquals(child3, topRightChild.getPatch(1));
+
+
+        TerrainPatch child4 = topLeftChild.findRightPatch(topLeftChild.getPatch(4));
+        assertNotNull(child4);
+        assertEquals(child4, topRightChild.getPatch(2));
 
         // Check non-existing neighbour quads
         assertEquals(topRightChild.findRightPatch(topRightChild.getPatch(3)), null);
