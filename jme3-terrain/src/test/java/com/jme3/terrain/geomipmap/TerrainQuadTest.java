@@ -13,7 +13,7 @@ public class TerrainQuadTest {
 
     @Before
     public void init() {
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             children[i] = new FakeTerrainQuad();
         }
 
@@ -32,6 +32,7 @@ public class TerrainQuadTest {
      * Used to recursively create a nested structure of {@link Spatial}s.
      * If nesting level is > 1, root element will be a {@link TerrainQuad}.
      * Leafs (nesting level 0) are {@link TerrainPatch}es.
+     *
      * @param nestLevel Nest level to be created.
      * @return Nested structure of {@link Spatial}s
      */
@@ -41,7 +42,7 @@ public class TerrainQuadTest {
         }
 
         FakeTerrainQuad parent = new FakeTerrainQuad();
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             Spatial child = createNestedQuad(nestLevel - 1);
 
             if (child instanceof TerrainPatch) {
@@ -71,13 +72,13 @@ public class TerrainQuadTest {
 
         FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
         assertEquals(root.getChildren().size(), 4);
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             assertTrue(root.getChild(i) instanceof TerrainPatch); // Ensure children of root are leafs
         }
 
         root = (FakeTerrainQuad) createNestedQuad(2);
         assertEquals(root.getChildren().size(), 4);
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             assertTrue(root.getChild(i) instanceof TerrainQuad); // Ensure children of root are not leafs
         }
     }
@@ -94,9 +95,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindRightQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad topRight = (FakeTerrainQuad)root.getQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad topRight = (FakeTerrainQuad) root.getQuad(3);
 
         assertEquals(root.findRightQuad(), null);
         assertEquals(topLeftChild.findRightQuad(), topRight); // Confirm position of two parent quads
@@ -114,9 +115,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindDownQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad downLeftChild = (FakeTerrainQuad)root.getQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad downLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
         assertEquals(root.findDownQuad(), null);
         assertEquals(topLeftChild.findDownQuad(), downLeftChild); // Confirm position of two parent quads
@@ -134,9 +135,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindLeftQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad topRightChild = (FakeTerrainQuad) root.getQuad(3);
 
         assertEquals(root.findLeftQuad(), null);
         assertEquals(topRightChild.findLeftQuad(), topLeftChild); // Confirm position of two parent quads
@@ -154,9 +155,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindTopQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad downLeftChild = (FakeTerrainQuad)root.getQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad downLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
         assertEquals(root.findTopQuad(), null);
         assertEquals(downLeftChild.findTopQuad(), topLeftChild); // Confirm position of two parent quads
@@ -170,5 +171,16 @@ public class TerrainQuadTest {
         // Check non-existing neighbour quads
         assertEquals(topLeftChild.getQuad(1).findTopQuad(), null);
         assertEquals(topLeftChild.getQuad(3).findTopQuad(), null);
+    }
+
+    @Test
+    public void testGetPatch() {
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        assertEquals(root.getPatch(0), null);
+        assertEquals(root.getPatch(1), root.getChild(0));
+        assertEquals(root.getPatch(2), root.getChild(1));
+        assertEquals(root.getPatch(3), root.getChild(2));
+        assertEquals(root.getPatch(4), root.getChild(3));
+        assertEquals(root.getPatch(5), null);
     }
 }
