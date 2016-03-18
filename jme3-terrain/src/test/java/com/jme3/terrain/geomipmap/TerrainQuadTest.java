@@ -91,4 +91,84 @@ public class TerrainQuadTest {
         assertEquals(parentTerrainQuad.getQuad(4), children[3]);
         assertEquals(parentTerrainQuad.getQuad(5), null);
     }
+
+    @Test
+    public void testFindRightQuad() {
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
+        FakeTerrainQuad topRight = (FakeTerrainQuad)root.getQuad(3);
+
+        assertEquals(root.findRightQuad(), null);
+        assertEquals(topLeftChild.findRightQuad(), topRight); // Confirm position of two parent quads
+
+        // Check quad children of parent
+        assertEquals(topLeftChild.getQuad(1).findRightQuad(), topLeftChild.getQuad(3));
+        assertEquals(topLeftChild.getQuad(2).findRightQuad(), topLeftChild.getQuad(4));
+        assertEquals(topLeftChild.getQuad(3).findRightQuad(), topRight.getQuad(1));
+        assertEquals(topLeftChild.getQuad(4).findRightQuad(), topRight.getQuad(2));
+
+        // Check non-existing neighbour quads
+        assertEquals(topRight.getQuad(3).findRightQuad(), null);
+        assertEquals(topRight.getQuad(4).findRightQuad(), null);
+    }
+
+    @Test
+    public void testFindDownQuad() {
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
+        FakeTerrainQuad downLeftChild = (FakeTerrainQuad)root.getQuad(2);
+
+        assertEquals(root.findDownQuad(), null);
+        assertEquals(topLeftChild.findDownQuad(), downLeftChild); // Confirm position of two parent quads
+
+        // Check quad children of parent
+        assertEquals(topLeftChild.getQuad(1).findDownQuad(), topLeftChild.getQuad(2));
+        assertEquals(topLeftChild.getQuad(2).findDownQuad(), downLeftChild.getQuad(1));
+        assertEquals(topLeftChild.getQuad(3).findDownQuad(), topLeftChild.getQuad(4));
+        assertEquals(topLeftChild.getQuad(4).findDownQuad(), downLeftChild.getQuad(3));
+
+        // Check non-existing neighbour quads
+        assertEquals(downLeftChild.getQuad(2).findDownQuad(), null);
+        assertEquals(downLeftChild.getQuad(4).findDownQuad(), null);
+    }
+
+    @Test
+    public void testFindLeftQuad() {
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
+        FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
+
+        assertEquals(root.findLeftQuad(), null);
+        assertEquals(topRightChild.findLeftQuad(), topLeftChild); // Confirm position of two parent quads
+
+        // Check quad children of parent
+        assertEquals(topRightChild.getQuad(1).findLeftQuad(), topLeftChild.getQuad(3));
+        assertEquals(topRightChild.getQuad(2).findLeftQuad(), topLeftChild.getQuad(4));
+        assertEquals(topRightChild.getQuad(3).findLeftQuad(), topRightChild.getQuad(1));
+        assertEquals(topRightChild.getQuad(4).findLeftQuad(), topRightChild.getQuad(2));
+
+        // Check non-existing neighbour quads
+        assertEquals(topLeftChild.getQuad(1).findLeftQuad(), null);
+        assertEquals(topLeftChild.getQuad(2).findLeftQuad(), null);
+    }
+
+    @Test
+    public void testFindTopQuad() {
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(3);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
+        FakeTerrainQuad downLeftChild = (FakeTerrainQuad)root.getQuad(2);
+
+        assertEquals(root.findTopQuad(), null);
+        assertEquals(downLeftChild.findTopQuad(), topLeftChild); // Confirm position of two parent quads
+
+        // Check quad children of parent
+        assertEquals(downLeftChild.getQuad(1).findTopQuad(), topLeftChild.getQuad(2));
+        assertEquals(downLeftChild.getQuad(2).findTopQuad(), downLeftChild.getQuad(1));
+        assertEquals(downLeftChild.getQuad(3).findTopQuad(), topLeftChild.getQuad(4));
+        assertEquals(downLeftChild.getQuad(4).findTopQuad(), downLeftChild.getQuad(3));
+
+        // Check non-existing neighbour quads
+        assertEquals(topLeftChild.getQuad(1).findTopQuad(), null);
+        assertEquals(topLeftChild.getQuad(3).findTopQuad(), null);
+    }
 }
