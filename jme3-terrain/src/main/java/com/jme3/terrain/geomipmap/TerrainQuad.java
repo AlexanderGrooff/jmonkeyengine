@@ -1463,7 +1463,7 @@ public class TerrainQuad extends Node implements Terrain {
                     case DIR_RIGHT  : return neighbourFinder.getRightQuad(this);
                     case DIR_DOWN   : return neighbourFinder.getDownQuad(this);
                     case DIR_LEFT   : return neighbourFinder.getLeftQuad(this);
-                    case DIR_TOP    : return neighbourFinder.getDownQuad(this);
+                    case DIR_TOP    : return neighbourFinder.getTopQuad(this);
                 }
             }
         }

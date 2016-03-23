@@ -99,6 +99,24 @@ public class TerrainQuadTest {
     }
 
     @Test
+    public void testFindQuadNeighbourFinder() {
+        FakeTerrainQuad[] roots = new FakeTerrainQuad[4];
+        roots[0] = (FakeTerrainQuad) createNestedQuad(2);
+        roots[1] = (FakeTerrainQuad) createNestedQuad(2);
+        roots[2] = (FakeTerrainQuad) createNestedQuad(2);
+        roots[3] = (FakeTerrainQuad) createNestedQuad(2);
+
+        NeighbourFinder nf = new TestNeighbourFinder(roots[0], roots[1], roots[2], roots[3]);
+        for (FakeTerrainQuad root : roots) {
+            root.setNeighbourFinder(nf);
+            assertEquals(root.findQuad(0), nf.getRightQuad(root));
+            assertEquals(root.findQuad(1), nf.getDownQuad(root));
+            assertEquals(root.findQuad(2), nf.getLeftQuad(root));
+            assertEquals(root.findQuad(3), nf.getTopQuad(root));
+        }
+    }
+
+    @Test
     public void testFindRightQuad() {
         FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
