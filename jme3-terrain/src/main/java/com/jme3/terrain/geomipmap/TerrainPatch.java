@@ -595,45 +595,42 @@ public class TerrainPatch extends Geometry {
         return normal;
     }
 
-    protected TerrainPatch createQuadPatch(int patchNumber, float[] heightMap, int split, int halfSize, int quarterSize) {
-        float[] heightBlock;
+
+    protected TerrainPatch createQuadPatch(TerrainQuad terrainQuad, int patchNumber, float[] heightBlock, int quarterSize, int halfSize, int split) {
+
         Vector3f origin;
         Vector2f tempOffset = new Vector2f();
-        tempOffset.x = offset.x;
-        tempOffset.y = offset.y;
+        tempOffset.x = terrainQuad.offset.x;
+        tempOffset.y = terrainQuad.offset.y;
 
-        TerrainQuad test = new TerrainQuad();
-
-        if (patchNumber == 1) {
-            heightBlock = test.createHeightSubBlock(heightMap, 0, 0, split);
-            origin = new Vector3f(-halfSize * stepScale.x, 0, -halfSize
-                    * stepScale.z);
-            tempOffset.x += origin.x / 2;
-            tempOffset.y += origin.z / 2;
-        } else if (patchNumber == 2) {
-            heightBlock = test.createHeightSubBlock(heightMap, 0, split - 1, split);
-            origin = new Vector3f(-halfSize * stepScale.x, 0, 0);
-            tempOffset.x += origin.x / 2;
-            tempOffset.y += quarterSize * stepScale.z;
-
-        } else if (patchNumber == 3) {
-            heightBlock = test.createHeightSubBlock(heightMap, split - 1, 0, split);
-            origin = new Vector3f(0, 0, -halfSize * stepScale.z);
-            tempOffset.x += quarterSize * stepScale.x;
-            tempOffset.y += origin.z / 2;
-        } else {
-            heightBlock = test.createHeightSubBlock(heightMap, split - 1,
-                    split - 1, split);
-            origin = new Vector3f(0, 0, 0);
-            tempOffset.x += quarterSize * stepScale.x;
-            tempOffset.y += quarterSize * stepScale.z;
+        switch (patchNumber) {
+            case 1:
+                origin = new Vector3f(-halfSize * terrainQuad.stepScale.x, 0, -halfSize
+                        * terrainQuad.stepScale.z);
+                tempOffset.x += origin.x / 2;
+                tempOffset.y += origin.z / 2;
+                break;
+            case 2:
+                origin = new Vector3f(-halfSize * terrainQuad.stepScale.x, 0, 0);
+                tempOffset.x += origin.x / 2;
+                tempOffset.y += quarterSize * terrainQuad.stepScale.z;
+                System.out.println(tempOffset);
+                break;
+            case 3:
+                origin = new Vector3f(0, 0, -halfSize * terrainQuad.stepScale.z);
+                tempOffset.x += quarterSize * terrainQuad.stepScale.x;
+                tempOffset.y += origin.z / 2;
+                break;
+            case 4:
+                origin = new Vector3f(0, 0, 0);
+                tempOffset.x += quarterSize * terrainQuad.stepScale.x;
+                tempOffset.y += quarterSize * terrainQuad.stepScale.z;
+                break;
+            default:
+                return null;
         }
 
-
-        return new TerrainPatch(getName() + "Patch" + patchNumber, split,
-                stepScale, heightBlock, origin, totalSize, tempOffset,
-                offsetAmount);
-
+        return new TerrainPatch(terrainQuad.getName() + "Patch" + patchNumber, split, terrainQuad.stepScale, heightBlock, origin, terrainQuad.totalSize, tempOffset, terrainQuad.offsetAmount);
     }
 
 

@@ -577,7 +577,7 @@ public class TerrainQuad extends Node implements Terrain {
      */
     protected void split(int blockSize, float[] heightMap) {
         if ((size >> 1) + 1 <= blockSize) {
-            createQuadPatch(heightMap);
+            setPatchChildren(heightMap);
         } else {
             createQuad(blockSize, heightMap);
         }
@@ -706,156 +706,42 @@ public class TerrainQuad extends Node implements Terrain {
         }
     }
 
-    protected void createQuadPatch(int patchNumber, float[] heightMap, int split, int halfSize, int quarterSize) {
-        float[] heightBlock;
-        Vector3f origin;
-        Vector2f tempOffset = new Vector2f();
-        tempOffset.x = offset.x;
-        tempOffset.y = offset.y;
 
-        if (patchNumber == 1) {
-            heightBlock = createHeightSubBlock(heightMap, 0, 0, split);
-            origin = new Vector3f(-halfSize * stepScale.x, 0, -halfSize
-                    * stepScale.z);
-            tempOffset.x += origin.x / 2;
-            tempOffset.y += origin.z / 2;
-        } else if (patchNumber == 2) {
-            heightBlock = createHeightSubBlock(heightMap, 0, split - 1, split);
-            origin = new Vector3f(-halfSize * stepScale.x, 0, 0);
-            tempOffset.x += origin.x / 2;
-            tempOffset.y += quarterSize * stepScale.z;
-
-        } else if (patchNumber == 3) {
-            heightBlock = createHeightSubBlock(heightMap, split - 1, 0, split);
-            origin = new Vector3f(0, 0, -halfSize * stepScale.z);
-            tempOffset.x += quarterSize * stepScale.x;
-            tempOffset.y += origin.z / 2;
-        } else {
-            heightBlock = createHeightSubBlock(heightMap, split - 1,
-                    split - 1, split);
-            origin = new Vector3f(0, 0, 0);
-            tempOffset.x += quarterSize * stepScale.x;
-            tempOffset.y += quarterSize * stepScale.z;
+    protected float[] createHeightBlock(int patchNumber, float[] heightMap, int split) {
+        switch (patchNumber) {
+            case 1:
+                return createHeightSubBlock(heightMap, 0, 0, split);
+            case 2:
+                return createHeightSubBlock(heightMap, 0, split - 1, split);
+            case 3:
+                return createHeightSubBlock(heightMap, split - 1, 0, split);
+            case 4:
+                return createHeightSubBlock(heightMap, split - 1, split - 1, split);
+            default:
+                return null;
         }
-
-
-        TerrainPatch patch = new TerrainPatch(getName() + "Patch" + patchNumber, split,
-                stepScale, heightBlock, origin, totalSize, tempOffset,
-                offsetAmount);
-        patch.setQuadrant((short) patchNumber);
-        this.attachChild(patch);
-        patch.setModelBound(new BoundingBox());
-        patch.updateModelBound();
     }
 
     /**
-     * <code>createQuadPatch</code> creates four child patches from this quad.
+     * <code>setPatchChildren</code> creates four child patches from this quad.
      */
-    protected void createQuadPatch(float[] heightMap) {
+    protected void setPatchChildren(float[] heightMap) {
+        TerrainPatch terrainPatch = new TerrainPatch();
+        int numberOfPatchChildren = 4;
 
-        TerrainPatch test = new TerrainPatch();
-        // create 4 terrain patches
         int quarterSize = size >> 2;
         int halfSize = size >> 1;
         int split = (size + 1) >> 1;
 
         offsetAmount += quarterSize;
 
-
-        for (int i = 1; i < 5; i++) {
-            //TerrainPatch patch = test.createQuadPatch(i, heightMap, split, halfSize, quarterSize);
-            createQuadPatch(i, heightMap, split, halfSize, quarterSize);
-//            patch.setQuadrant((short) i);
-//            this.attachChild(patch);
-//            patch.setModelBound(new BoundingBox());
-//            patch.updateModelBound();
+        for (int i = 1; i <= numberOfPatchChildren; i++) {
+            TerrainPatch patch = terrainPatch.createQuadPatch(this, i, createHeightBlock(i, heightMap, split), quarterSize, halfSize, split);
+            patch.setQuadrant((short) i);
+            this.attachChild(patch);
+            patch.setModelBound(new BoundingBox());
+            patch.updateModelBound();
         }
-
-        // 1 lower left
-//        float[] heightBlock1 = createHeightSubBlock(heightMap, 0, 0, split);
-//
-//        Vector3f origin1 = new Vector3f(-halfSize * stepScale.x, 0, -halfSize
-//                * stepScale.z);
-//
-//        Vector2f tempOffset1 = new Vector2f();
-//        tempOffset1.x = offset.x;
-//        tempOffset1.y = offset.y;
-//        tempOffset1.x += origin1.x / 2;
-//        tempOffset1.y += origin1.z / 2;
-//
-//        TerrainPatch patch1 = new TerrainPatch(getName() + "Patch1", split,
-//                stepScale, heightBlock1, origin1, totalSize, tempOffset1,
-//                offsetAmount);
-//        patch1.setQuadrant((short) 1);
-//        this.attachChild(patch1);
-//        patch1.setModelBound(new BoundingBox());
-//        patch1.updateModelBound();
-//
-//        // 2 upper left
-//        float[] heightBlock2 = createHeightSubBlock(heightMap, 0, split - 1,
-//                split);
-//
-//        Vector3f origin2 = new Vector3f(-halfSize * stepScale.x, 0, 0);
-//
-//        Vector2f tempOffset2 = new Vector2f();
-//        tempOffset2.x = offset.x;
-//        tempOffset2.y = offset.y;
-//        //tempOffset2.x += origin1.x / 2;
-//        tempOffset2.y += quarterSize * stepScale.z;
-//
-//        TerrainPatch patch2 = new TerrainPatch(getName() + "Patch2", split,
-//                stepScale, heightBlock2, origin2, totalSize, tempOffset2,
-//                offsetAmount);
-//        patch2.setQuadrant((short) 2);
-//        this.attachChild(patch2);
-//        patch2.setModelBound(new BoundingBox());
-//        patch2.updateModelBound();
-//        //patch2.setLodCalculator(lodCalculator);
-//        //TangentBinormalGenerator.generate(patch2);
-//
-//        // 3 lower right
-//        float[] heightBlock3 = createHeightSubBlock(heightMap, split - 1, 0,
-//                split);
-//
-//        Vector3f origin3 = new Vector3f(0, 0, -halfSize * stepScale.z);
-//
-//        Vector2f tempOffset3 = new Vector2f();
-//        tempOffset3.x = offset.x;
-//        tempOffset3.y = offset.y;
-//        tempOffset3.x += quarterSize * stepScale.x;
-//        tempOffset3.y += origin3.z / 2;
-//
-//        TerrainPatch patch3 = new TerrainPatch(getName() + "Patch3", split,
-//                stepScale, heightBlock3, origin3, totalSize, tempOffset3,
-//                offsetAmount);
-//        patch3.setQuadrant((short) 3);
-//        this.attachChild(patch3);
-//        patch3.setModelBound(new BoundingBox());
-//        patch3.updateModelBound();
-//        //patch3.setLodCalculator(lodCalculator);
-//        //TangentBinormalGenerator.generate(patch3);
-//
-//        // 4 upper right
-//        float[] heightBlock4 = createHeightSubBlock(heightMap, split - 1,
-//                split - 1, split);
-//
-//        Vector3f origin4 = new Vector3f(0, 0, 0);
-//
-//        Vector2f tempOffset4 = new Vector2f();
-//        tempOffset4.x = offset.x;
-//        tempOffset4.y = offset.y;
-//        tempOffset4.x += quarterSize * stepScale.x;
-//        tempOffset4.y += quarterSize * stepScale.z;
-//
-//        TerrainPatch patch4 = new TerrainPatch(getName() + "Patch4", split,
-//                stepScale, heightBlock4, origin4, totalSize, tempOffset4,
-//                offsetAmount);
-//        patch4.setQuadrant((short) 4);
-//        this.attachChild(patch4);
-//        patch4.setModelBound(new BoundingBox());
-//        patch4.updateModelBound();
-//        //patch4.setLodCalculator(lodCalculator);
-//        //TangentBinormalGenerator.generate(patch4);
     }
 
 
@@ -1902,6 +1788,15 @@ public class TerrainQuad extends Node implements Terrain {
     public int getTotalSize() {
         return totalSize;
     }
+
+    public float getOffsetAmount() {
+        return offsetAmount;
+    }
+
+    public void setOffsetAmount(float offsetAmount) {
+        this.offsetAmount = offsetAmount;
+    }
+
 
     public float[] getHeightMap() {
 
