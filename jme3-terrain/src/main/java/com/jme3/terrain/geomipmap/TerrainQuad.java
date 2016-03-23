@@ -1552,7 +1552,7 @@ public class TerrainQuad extends Node implements Terrain {
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(4);
                 break;
-            case 4: pQuad.getQuad(3);
+            case 4: return pQuad.getQuad(3);
         }
         return null;
     }

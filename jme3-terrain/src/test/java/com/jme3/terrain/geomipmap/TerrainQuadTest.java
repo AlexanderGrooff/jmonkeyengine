@@ -10,6 +10,8 @@ import org.junit.rules.ExpectedException;
 
 public class TerrainQuadTest {
 
+    final int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
+
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -122,18 +124,18 @@ public class TerrainQuadTest {
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad topRight = (FakeTerrainQuad) root.getQuad(3);
 
-        assertEquals(root.findRightQuad(), null);
-        assertEquals(topLeftChild.findRightQuad(), topRight); // Confirm position of two parent quads
+        assertEquals(root.findQuad(DIR_RIGHT), null);
+        assertEquals(topLeftChild.findQuad(DIR_RIGHT), topRight); // Confirm position of two parent quads
 
         // Check quad children of parent
-        assertEquals(topLeftChild.getQuad(1).findRightQuad(), topLeftChild.getQuad(3));
-        assertEquals(topLeftChild.getQuad(2).findRightQuad(), topLeftChild.getQuad(4));
-        assertEquals(topLeftChild.getQuad(3).findRightQuad(), topRight.getQuad(1));
-        assertEquals(topLeftChild.getQuad(4).findRightQuad(), topRight.getQuad(2));
+        assertEquals(topLeftChild.getQuad(1).findQuad(DIR_RIGHT), topLeftChild.getQuad(3));
+        assertEquals(topLeftChild.getQuad(2).findQuad(DIR_RIGHT), topLeftChild.getQuad(4));
+        assertEquals(topLeftChild.getQuad(3).findQuad(DIR_RIGHT), topRight.getQuad(1));
+        assertEquals(topLeftChild.getQuad(4).findQuad(DIR_RIGHT), topRight.getQuad(2));
 
         // Check non-existing neighbour quads
-        assertEquals(topRight.getQuad(3).findRightQuad(), null);
-        assertEquals(topRight.getQuad(4).findRightQuad(), null);
+        assertEquals(topRight.getQuad(3).findQuad(DIR_RIGHT), null);
+        assertEquals(topRight.getQuad(4).findQuad(DIR_RIGHT), null);
     }
 
     @Test
@@ -142,18 +144,18 @@ public class TerrainQuadTest {
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad downLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
-        assertEquals(root.findDownQuad(), null);
-        assertEquals(topLeftChild.findDownQuad(), downLeftChild); // Confirm position of two parent quads
+        assertEquals(root.findQuad(DIR_DOWN), null);
+        assertEquals(topLeftChild.findQuad(DIR_DOWN), downLeftChild); // Confirm position of two parent quads
 
         // Check quad children of parent
-        assertEquals(topLeftChild.getQuad(1).findDownQuad(), topLeftChild.getQuad(2));
-        assertEquals(topLeftChild.getQuad(2).findDownQuad(), downLeftChild.getQuad(1));
-        assertEquals(topLeftChild.getQuad(3).findDownQuad(), topLeftChild.getQuad(4));
-        assertEquals(topLeftChild.getQuad(4).findDownQuad(), downLeftChild.getQuad(3));
+        assertEquals(topLeftChild.getQuad(1).findQuad(DIR_DOWN), topLeftChild.getQuad(2));
+        assertEquals(topLeftChild.getQuad(2).findQuad(DIR_DOWN), downLeftChild.getQuad(1));
+        assertEquals(topLeftChild.getQuad(3).findQuad(DIR_DOWN), topLeftChild.getQuad(4));
+        assertEquals(topLeftChild.getQuad(4).findQuad(DIR_DOWN), downLeftChild.getQuad(3));
 
         // Check non-existing neighbour quads
-        assertEquals(downLeftChild.getQuad(2).findDownQuad(), null);
-        assertEquals(downLeftChild.getQuad(4).findDownQuad(), null);
+        assertEquals(downLeftChild.getQuad(2).findQuad(DIR_DOWN), null);
+        assertEquals(downLeftChild.getQuad(4).findQuad(DIR_DOWN), null);
     }
 
     @Test
@@ -162,18 +164,18 @@ public class TerrainQuadTest {
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad topRightChild = (FakeTerrainQuad) root.getQuad(3);
 
-        assertEquals(root.findLeftQuad(), null);
-        assertEquals(topRightChild.findLeftQuad(), topLeftChild); // Confirm position of two parent quads
+        assertEquals(root.findQuad(DIR_LEFT), null);
+        assertEquals(topRightChild.findQuad(DIR_LEFT), topLeftChild); // Confirm position of two parent quads
 
         // Check quad children of parent
-        assertEquals(topRightChild.getQuad(1).findLeftQuad(), topLeftChild.getQuad(3));
-        assertEquals(topRightChild.getQuad(2).findLeftQuad(), topLeftChild.getQuad(4));
-        assertEquals(topRightChild.getQuad(3).findLeftQuad(), topRightChild.getQuad(1));
-        assertEquals(topRightChild.getQuad(4).findLeftQuad(), topRightChild.getQuad(2));
+        assertEquals(topRightChild.getQuad(1).findQuad(DIR_LEFT), topLeftChild.getQuad(3));
+        assertEquals(topRightChild.getQuad(2).findQuad(DIR_LEFT), topLeftChild.getQuad(4));
+        assertEquals(topRightChild.getQuad(3).findQuad(DIR_LEFT), topRightChild.getQuad(1));
+        assertEquals(topRightChild.getQuad(4).findQuad(DIR_LEFT), topRightChild.getQuad(2));
 
         // Check non-existing neighbour quads
-        assertEquals(topLeftChild.getQuad(1).findLeftQuad(), null);
-        assertEquals(topLeftChild.getQuad(2).findLeftQuad(), null);
+        assertEquals(topLeftChild.getQuad(1).findQuad(DIR_LEFT), null);
+        assertEquals(topLeftChild.getQuad(2).findQuad(DIR_LEFT), null);
     }
 
     @Test
@@ -182,18 +184,18 @@ public class TerrainQuadTest {
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad downLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
-        assertEquals(root.findTopQuad(), null);
-        assertEquals(downLeftChild.findTopQuad(), topLeftChild); // Confirm position of two parent quads
+        assertEquals(root.findQuad(DIR_TOP), null);
+        assertEquals(downLeftChild.findQuad(DIR_TOP), topLeftChild); // Confirm position of two parent quads
 
         // Check quad children of parent
-        assertEquals(downLeftChild.getQuad(1).findTopQuad(), topLeftChild.getQuad(2));
-        assertEquals(downLeftChild.getQuad(2).findTopQuad(), downLeftChild.getQuad(1));
-        assertEquals(downLeftChild.getQuad(3).findTopQuad(), topLeftChild.getQuad(4));
-        assertEquals(downLeftChild.getQuad(4).findTopQuad(), downLeftChild.getQuad(3));
+        assertEquals(downLeftChild.getQuad(1).findQuad(DIR_TOP), topLeftChild.getQuad(2));
+        assertEquals(downLeftChild.getQuad(2).findQuad(DIR_TOP), downLeftChild.getQuad(1));
+        assertEquals(downLeftChild.getQuad(3).findQuad(DIR_TOP), topLeftChild.getQuad(4));
+        assertEquals(downLeftChild.getQuad(4).findQuad(DIR_TOP), downLeftChild.getQuad(3));
 
         // Check non-existing neighbour quads
-        assertEquals(topLeftChild.getQuad(1).findTopQuad(), null);
-        assertEquals(topLeftChild.getQuad(3).findTopQuad(), null);
+        assertEquals(topLeftChild.getQuad(1).findQuad(DIR_TOP), null);
+        assertEquals(topLeftChild.getQuad(3).findQuad(DIR_TOP), null);
     }
 
     @Test
@@ -220,7 +222,7 @@ public class TerrainQuadTest {
             assertEquals(e.getClass(), NullPointerException.class);
         }
 
-        assertEquals(topLeftChild.findRightQuad(), topRightChild); // Confirm position of two parent quads
+        assertEquals(topLeftChild.findQuad(DIR_RIGHT), topRightChild); // Confirm position of two parent quads
 
         // Check quad children of parent
         TerrainPatch child1 = topLeftChild.findRightPatch(topLeftChild.getPatch(1));
@@ -258,7 +260,7 @@ public class TerrainQuadTest {
             assertEquals(e.getClass(), NullPointerException.class);
         }
 
-        assertEquals(topLeftChild.findDownQuad(), bottomLeftChild); // Confirm position of two parent quads
+        assertEquals(topLeftChild.findQuad(DIR_DOWN), bottomLeftChild); // Confirm position of two parent quads
 
         // Check quad children of parent
         TerrainPatch child1 = topLeftChild.findDownPatch(topLeftChild.getPatch(1));
@@ -296,7 +298,7 @@ public class TerrainQuadTest {
             assertEquals(e.getClass(), NullPointerException.class);
         }
 
-        assertEquals(topRightChild.findLeftQuad(), topLeftChild); // Confirm position of two parent quads
+        assertEquals(topRightChild.findQuad(DIR_LEFT), topLeftChild); // Confirm position of two parent quads
 
         // Check quad children of parent
         TerrainPatch child1 = topRightChild.findLeftPatch(topRightChild.getPatch(1));
@@ -334,7 +336,7 @@ public class TerrainQuadTest {
             assertEquals(e.getClass(), NullPointerException.class);
         }
 
-        assertEquals(bottomRightChild.findTopQuad(), topRightChild); // Confirm position of two parent quads
+        assertEquals(bottomRightChild.findQuad(DIR_TOP), topRightChild); // Confirm position of two parent quads
 
         // Check quad children of parent
         TerrainPatch child1 = bottomRightChild.findTopPatch(bottomRightChild.getPatch(1));
@@ -362,13 +364,12 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindQuad() {
-        int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
-
         FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
 
         assertEquals(root.quadrant, 0);
 
-        assertEquals(root.findQuad(-1), null);
+        assertNull(root.findQuad(-1));
+        assertNull(root.getQuad(1).findQuad(-1));
 
         assertEquals(root.findQuad(DIR_RIGHT), root.findRightQuad());
         assertEquals(root.findQuad(DIR_DOWN), root.findDownQuad());
