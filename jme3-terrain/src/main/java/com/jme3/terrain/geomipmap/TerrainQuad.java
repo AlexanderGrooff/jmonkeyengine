@@ -1377,12 +1377,12 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(4);
         else if (tp.getQuadrant() == 3) {
             // find the patch to the right and ask it for child 1.
-            TerrainQuad quad = findRightQuad();
+            TerrainQuad quad = findQuad(DIR_RIGHT);
             if (quad != null)
                 return quad.getPatch(1);
         } else if (tp.getQuadrant() == 4) {
             // find the patch to the right and ask it for child 2.
-            TerrainQuad quad = findRightQuad();
+            TerrainQuad quad = findQuad(DIR_RIGHT);
             if (quad != null)
                 return quad.getPatch(2);
         }
@@ -1397,11 +1397,11 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(4);
         else if (tp.getQuadrant() == 2) {
             // find the patch below and ask it for child 1.
-            TerrainQuad quad = findDownQuad();
+            TerrainQuad quad = findQuad(DIR_DOWN);
             if (quad != null)
                 return quad.getPatch(1);
         } else if (tp.getQuadrant() == 4) {
-            TerrainQuad quad = findDownQuad();
+            TerrainQuad quad = findQuad(DIR_DOWN);
             if (quad != null)
                 return quad.getPatch(3);
         }
@@ -1417,11 +1417,11 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(3);
         else if (tp.getQuadrant() == 1) {
             // find the patch above and ask it for child 2.
-            TerrainQuad quad = findTopQuad();
+            TerrainQuad quad = findQuad(DIR_TOP);
             if (quad != null)
                 return quad.getPatch(2);
         } else if (tp.getQuadrant() == 3) {
-            TerrainQuad quad = findTopQuad();
+            TerrainQuad quad = findQuad(DIR_TOP);
             if (quad != null)
                 return quad.getPatch(4);
         }
@@ -1436,11 +1436,11 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(2);
         else if (tp.getQuadrant() == 1) {
             // find the patch above and ask it for child 3.
-            TerrainQuad quad = findLeftQuad();
+            TerrainQuad quad = findQuad(DIR_LEFT);
             if (quad != null)
                 return quad.getPatch(3);
         } else if (tp.getQuadrant() == 2) {
-            TerrainQuad quad = findLeftQuad();
+            TerrainQuad quad = findQuad(DIR_LEFT);
             if (quad != null)
                 return quad.getPatch(4);
         }
@@ -1557,6 +1557,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainQuad findRightQuad() {
         boolean useFinder = false;
         if (getParent() == null || !(getParent() instanceof TerrainQuad)) {
@@ -1575,11 +1576,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 2)
             return pQuad.getQuad(4);
         else if (quadrant == 3) {
-            TerrainQuad quad = pQuad.findRightQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_RIGHT);
             if (quad != null)
                 return quad.getQuad(1);
         } else if (quadrant == 4) {
-            TerrainQuad quad = pQuad.findRightQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_RIGHT);
             if (quad != null)
                 return quad.getQuad(2);
         } else if (quadrant == 0) {
@@ -1593,6 +1594,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainQuad findDownQuad() {
         boolean useFinder = false;
         if (getParent() == null || !(getParent() instanceof TerrainQuad)) {
@@ -1611,11 +1613,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 3)
             return pQuad.getQuad(4);
         else if (quadrant == 2) {
-            TerrainQuad quad = pQuad.findDownQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_DOWN);
             if (quad != null)
                 return quad.getQuad(1);
         } else if (quadrant == 4) {
-            TerrainQuad quad = pQuad.findDownQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_DOWN);
             if (quad != null)
                 return quad.getQuad(3);
         } else if (quadrant == 0) {
@@ -1629,6 +1631,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainQuad findTopQuad() {
         boolean useFinder = false;
         if (getParent() == null || !(getParent() instanceof TerrainQuad)) {
@@ -1647,11 +1650,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 4)
             return pQuad.getQuad(3);
         else if (quadrant == 1) {
-            TerrainQuad quad = pQuad.findTopQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_TOP);
             if (quad != null)
                 return quad.getQuad(2);
         } else if (quadrant == 3) {
-            TerrainQuad quad = pQuad.findTopQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_TOP);
             if (quad != null)
                 return quad.getQuad(4);
         } else if (quadrant == 0) {
@@ -1665,6 +1668,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainQuad findLeftQuad() {
         boolean useFinder = false;
         if (getParent() == null || !(getParent() instanceof TerrainQuad)) {
@@ -1683,11 +1687,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 4)
             return pQuad.getQuad(2);
         else if (quadrant == 1) {
-            TerrainQuad quad = pQuad.findLeftQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_LEFT);
             if (quad != null)
                 return quad.getQuad(3);
         } else if (quadrant == 2) {
-            TerrainQuad quad = pQuad.findLeftQuad();
+            TerrainQuad quad = pQuad.findQuad(DIR_LEFT);
             if (quad != null)
                 return quad.getQuad(4);
         } else if (quadrant == 0) {
