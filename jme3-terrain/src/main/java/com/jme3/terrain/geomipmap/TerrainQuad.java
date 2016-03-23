@@ -707,6 +707,14 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
 
+    /**
+     * <code>createHeightBlock</code> creates the heightSubBlock according to the provided patch number.
+     *
+     * @param patchNumber
+     * @param heightMap
+     * @param split
+     * @return HeightSubBlock array
+     */
     protected float[] createHeightBlock(int patchNumber, float[] heightMap, int split) {
         switch (patchNumber) {
             case 1:
@@ -723,7 +731,9 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
     /**
-     * <code>setPatchChildren</code> creates four child patches from this quad.
+     * <code>setPatchChildren</code> sets four child patches to this quad.
+     *
+     * @param heightMap
      */
     protected void setPatchChildren(float[] heightMap) {
         TerrainPatch terrainPatch = new TerrainPatch();

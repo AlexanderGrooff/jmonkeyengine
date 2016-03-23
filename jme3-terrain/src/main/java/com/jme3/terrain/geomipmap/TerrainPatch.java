@@ -596,6 +596,17 @@ public class TerrainPatch extends Geometry {
     }
 
 
+    /**
+     * <code>createQuadPatch</code> creates a terrain patch according to the provided patchNumber.
+     *
+     * @param terrainQuad
+     * @param patchNumber
+     * @param heightBlock
+     * @param quarterSize
+     * @param halfSize
+     * @param split
+     * @return TerrainPatch object
+     */
     protected TerrainPatch createQuadPatch(TerrainQuad terrainQuad, int patchNumber, float[] heightBlock, int quarterSize, int halfSize, int split) {
 
         Vector3f origin;
