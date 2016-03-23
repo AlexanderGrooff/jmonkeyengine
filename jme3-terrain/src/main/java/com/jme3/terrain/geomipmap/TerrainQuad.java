@@ -1446,6 +1446,87 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    protected TerrainQuad findQuad(int direction) {
+        final int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
+
+        boolean useFinder = false;
+        if (getParent() == null || !(getParent() instanceof TerrainQuad)) {
+            if (neighbourFinder == null)
+                return null;
+            else
+                useFinder = true;
+        }
+
+        TerrainQuad pQuad = null;
+        if (!useFinder)
+            pQuad = (TerrainQuad) getParent();
+
+        TerrainQuad neighbourQuad;
+        switch (direction) {
+            case DIR_RIGHT:
+                switch (quadrant) {
+                    case 1: return pQuad.getQuad(3);
+                    case 2: return pQuad.getQuad(4);
+                    case 3:
+                        neighbourQuad = pQuad.findQuad(DIR_RIGHT);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(1);
+                        break;
+                    case 4: case DIR_RIGHT:
+                        neighbourQuad = pQuad.findQuad(DIR_RIGHT);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(2);
+                        break;
+                }
+            case DIR_DOWN:
+                switch (quadrant) {
+                    case 1: return pQuad.getQuad(2);
+                    case 2: neighbourQuad = pQuad.findQuad(DIR_DOWN);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(1);
+                        break;
+                    case 3: return pQuad.getQuad(4);
+                    case 4:
+                        neighbourQuad = pQuad.findQuad(DIR_DOWN);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(3);
+                        break;
+                }
+            case DIR_LEFT:
+                switch (quadrant) {
+                    case 1:
+                        neighbourQuad = pQuad.findQuad(DIR_LEFT);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(3);
+                        break;
+                    case 2:
+                        neighbourQuad = pQuad.findQuad(DIR_LEFT);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(4);
+                        break;
+                    case 3: return pQuad.getQuad(1);
+                    case 4: return pQuad.getQuad(2);
+                }
+            case DIR_TOP:
+                switch (quadrant) {
+                    case 1:
+                        neighbourQuad = pQuad.findQuad(DIR_TOP);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(2);
+                        break;
+                    case 2: return pQuad.getQuad(1);
+                    case 3:
+                        neighbourQuad = pQuad.findQuad(DIR_TOP);
+                        if (neighbourQuad != null)
+                            return neighbourQuad.getQuad(4);
+                        break;
+                    case 4: pQuad.getQuad(3);
+                }
+        }
+
+        return null;
+    }
+
     protected TerrainQuad findRightQuad() {
         boolean useFinder = false;
         if (getParent() == null || !(getParent() instanceof TerrainQuad)) {
