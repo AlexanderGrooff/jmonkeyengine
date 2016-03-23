@@ -341,4 +341,28 @@ public class TerrainQuadTest {
         assertEquals(topRightChild.findTopPatch(topRightChild.getPatch(1)), null);
         assertEquals(topRightChild.findTopPatch(topRightChild.getPatch(3)), null);
     }
+
+    @Test
+    public void testFindQuad() {
+        int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
+
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+
+        assertEquals(root.quadrant, 0);
+
+        assertEquals(root.findQuad(-1), null);
+
+        assertEquals(root.findQuad(DIR_RIGHT), root.findRightQuad());
+        assertEquals(root.findQuad(DIR_DOWN), root.findDownQuad());
+        assertEquals(root.findQuad(DIR_LEFT), root.findLeftQuad());
+        assertEquals(root.findQuad(DIR_TOP), root.findTopQuad());
+
+        for(int i = 0; i < root.getChildren().size(); i++) {
+            FakeTerrainQuad child = (FakeTerrainQuad)root.getQuad(i);
+            assertEquals(child.findQuad(DIR_RIGHT), child.findRightQuad());
+            assertEquals(child.findQuad(DIR_DOWN), child.findDownQuad());
+            assertEquals(child.findQuad(DIR_LEFT), child.findLeftQuad());
+            assertEquals(child.findQuad(DIR_TOP), child.findTopQuad());
+        }
+    }
 }
