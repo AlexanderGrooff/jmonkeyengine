@@ -114,6 +114,8 @@ public class TerrainPatch extends Geometry {
 
     protected float[] lodEntropy;
 
+    private final int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
+
     public TerrainPatch() {
         super("TerrainPatch");
         setBatchHint(BatchHint.Never);
@@ -303,6 +305,105 @@ public class TerrainPatch extends Geometry {
      */
     public Triangle[] getGridTriangles(float x, float z) {
         return geomap.getGridTrianglesAtPoint(x, z, getWorldScale() , getWorldTranslation());
+    }
+
+    protected TerrainPatch findPatch(int direction) {
+        switch (direction) {
+            case DIR_RIGHT  : return getRightNeighbourPatch();
+            case DIR_DOWN   : return getDownNeighbourPatch();
+            case DIR_LEFT   : return getLeftNeighbourPatch();
+            case DIR_TOP    : return getTopNeighbourPatch();
+        }
+
+        return null;
+    }
+
+    private TerrainPatch getRightNeighbourPatch() {
+        TerrainQuad parent = (TerrainQuad) this.getParent();
+        TerrainQuad neighbourQuad;
+
+        switch(quadrant) {
+            case 1: return parent.getPatch(3);
+            case 2: return parent.getPatch(4);
+            case 3:
+                neighbourQuad = parent.findQuad(DIR_RIGHT);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(1);
+                break;
+            case 4:
+                neighbourQuad = parent.findQuad(DIR_RIGHT);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(2);
+                break;
+        }
+
+        return null;
+    }
+
+    private TerrainPatch getDownNeighbourPatch() {
+        TerrainQuad parent = (TerrainQuad) this.getParent();
+        TerrainQuad neighbourQuad;
+
+        switch(quadrant) {
+            case 1: return parent.getPatch(2);
+            case 2:
+                neighbourQuad = parent.findQuad(DIR_DOWN);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(1);
+                break;
+            case 3: return parent.getPatch(4);
+            case 4:
+                neighbourQuad = parent.findQuad(DIR_DOWN);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(3);
+                break;
+        }
+
+        return null;
+    }
+
+    private TerrainPatch getLeftNeighbourPatch() {
+        TerrainQuad parent = (TerrainQuad) this.getParent();
+        TerrainQuad neighbourQuad;
+
+        switch(quadrant) {
+            case 1:
+                neighbourQuad = parent.findQuad(DIR_LEFT);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(3);
+                break;
+            case 2:
+                neighbourQuad = parent.findQuad(DIR_LEFT);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(4);
+                break;
+            case 3: return parent.getPatch(1);
+            case 4: return parent.getPatch(2);
+        }
+
+        return null;
+    }
+
+    private TerrainPatch getTopNeighbourPatch() {
+        TerrainQuad parent = (TerrainQuad) this.getParent();
+        TerrainQuad neighbourQuad;
+
+        switch(quadrant) {
+            case 1:
+                neighbourQuad = parent.findQuad(DIR_TOP);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(2);
+                break;
+            case 2: return parent.getPatch(1);
+            case 3:
+                neighbourQuad = parent.findQuad(DIR_TOP);
+                if (neighbourQuad != null)
+                    return neighbourQuad.getPatch(4);
+                break;
+            case 4: return parent.getPatch(3);
+        }
+
+        return null;
     }
 
     protected void setHeight(List<LocationHeight> locationHeights, boolean overrideHeight) {
