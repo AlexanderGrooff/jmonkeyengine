@@ -73,14 +73,6 @@ public class UpdatedTerrainPatch {
             return false;
     }
 
-    protected TerrainPatch getUpdatedPatch() {
-        return updatedPatch;
-    }
-
-    protected void setUpdatedPatch(TerrainPatch updatedPatch) {
-        this.updatedPatch = updatedPatch;
-    }
-
     protected int getNewLod() {
         return newLod;
     }
