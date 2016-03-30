@@ -399,10 +399,10 @@ public class TerrainQuad extends Node implements Terrain {
                     TerrainPatch patch = (TerrainPatch) child;
                     if (!patch.searchedForNeighboursAlready) {
                         // set the references to the neighbours
-                        patch.rightNeighbour = findRightPatch(patch);
-                        patch.bottomNeighbour = findDownPatch(patch);
-                        patch.leftNeighbour = findLeftPatch(patch);
-                        patch.topNeighbour = findTopPatch(patch);
+                        patch.rightNeighbour = patch.findPatch(DIR_RIGHT);
+                        patch.bottomNeighbour = patch.findPatch(DIR_DOWN);
+                        patch.leftNeighbour = patch.findPatch(DIR_LEFT);
+                        patch.topNeighbour = patch.findPatch(DIR_TOP);
                         patch.searchedForNeighboursAlready = true;
                     }
                     TerrainPatch right = patch.rightNeighbour;
@@ -498,10 +498,10 @@ public class TerrainQuad extends Node implements Terrain {
                     if(utp != null && utp.lodChanged()) {
                         if (!patch.searchedForNeighboursAlready) {
                             // set the references to the neighbours
-                            patch.rightNeighbour = findRightPatch(patch);
-                            patch.bottomNeighbour = findDownPatch(patch);
-                            patch.leftNeighbour = findLeftPatch(patch);
-                            patch.topNeighbour = findTopPatch(patch);
+                            patch.rightNeighbour = patch.findPatch(DIR_RIGHT);
+                            patch.bottomNeighbour = patch.findPatch(DIR_DOWN);
+                            patch.leftNeighbour = patch.findPatch(DIR_LEFT);
+                            patch.topNeighbour = patch.findPatch(DIR_TOP);
                             patch.searchedForNeighboursAlready = true;
                         }
                         TerrainPatch right = patch.rightNeighbour;
@@ -1747,22 +1747,22 @@ public class TerrainQuad extends Node implements Terrain {
                     continue;
 
                 TerrainPatch tp = (TerrainPatch) child;
-                TerrainPatch right = findRightPatch(tp);
-                TerrainPatch bottom = findDownPatch(tp);
-                TerrainPatch top = findTopPatch(tp);
-                TerrainPatch left = findLeftPatch(tp);
+                TerrainPatch right = tp.findPatch(DIR_RIGHT);
+                TerrainPatch bottom = tp.findPatch(DIR_DOWN);
+                TerrainPatch top = tp.findPatch(DIR_TOP);
+                TerrainPatch left = tp.findPatch(DIR_LEFT);
                 TerrainPatch topLeft = null;
                 if (top != null)
-                    topLeft = findLeftPatch(top);
+                    topLeft = top.findPatch(DIR_LEFT);
                 TerrainPatch bottomRight = null;
                 if (right != null)
-                    bottomRight = findDownPatch(right);
+                    bottomRight = right.findPatch(DIR_DOWN);
                 TerrainPatch topRight = null;
                 if (top != null)
-                    topRight = findRightPatch(top);
+                    topRight = top.findPatch(DIR_RIGHT);
                 TerrainPatch bottomLeft = null;
                 if (left != null)
-                    bottomLeft = findDownPatch(left);
+                    bottomLeft = left.findPatch(DIR_DOWN);
 
                 tp.fixNormalEdges(right, bottom, top, left, bottomRight, bottomLeft, topRight, topLeft);
 
