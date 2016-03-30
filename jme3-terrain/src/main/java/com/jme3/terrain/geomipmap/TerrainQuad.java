@@ -108,6 +108,10 @@ import java.util.logging.Logger;
  * @author Brent Owens
  */
 public class TerrainQuad extends Node implements Terrain {
+
+    private Vector3f meshNormal;
+    private float heightmapHeight;
+
     protected Vector2f offset;
 
     protected int totalSize; // the size of this entire terrain tree (on one side)
@@ -902,8 +906,58 @@ public class TerrainQuad extends Node implements Terrain {
 
             }
         }
+
+        //getMatch(x, z);
         return Float.NaN;
     }
+
+//    protected void getMatch(int x, int z) {
+//
+//        int quad = findQuadrant(x, z);
+//        int split = (size + 1) >> 1;
+//        if (children != null) {
+//            for (int i = children.size(); --i >= 0; ) {
+//                Spatial spat = children.get(i);
+//                int col = x;
+//                int row = z;
+//                boolean match = false;
+//
+//                // get the childs quadrant
+//                int childQuadrant = 0;
+//                if (spat instanceof TerrainQuad) {
+//                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
+//                } else if (spat instanceof TerrainPatch) {
+//                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
+//                }
+//
+//                if (childQuadrant == 1 && (quad & 1) != 0) {
+//                    match = true;
+//                } else if (childQuadrant == 2 && (quad & 2) != 0) {
+//                    row = z - split + 1;
+//                    match = true;
+//                } else if (childQuadrant == 3 && (quad & 4) != 0) {
+//                    col = x - split + 1;
+//                    match = true;
+//                } else if (childQuadrant == 4 && (quad & 8) != 0) {
+//                    col = x - split + 1;
+//                    row = z - split + 1;
+//                    match = true;
+//                }
+//
+//                if (match) {
+//                    if (spat instanceof TerrainQuad) {
+//                        ((TerrainQuad) spat).getHeightmapHeight(col, row);
+//                    } else if (spat instanceof TerrainPatch) {
+//                        ((TerrainPatch) spat).getHeightmapHeight(col, row);
+//                    }
+//                }
+//
+//            }
+//        }
+//        heightmapHeight = Float.NaN;
+//
+//    }
+
 
     protected Vector3f getMeshNormal(int x, int z) {
         int quad = findQuadrant(x, z);
@@ -1072,7 +1126,7 @@ public class TerrainQuad extends Node implements Terrain {
         // v3--v4  | Z
         //         |
         // <-------Y
-        //     X 
+        //     X
         Vector3f n1 = getMeshNormal((int) FastMath.ceil(x), (int) FastMath.ceil(z));
         Vector3f n2 = getMeshNormal((int) FastMath.floor(x), (int) FastMath.ceil(z));
         Vector3f n3 = getMeshNormal((int) FastMath.ceil(x), (int) FastMath.floor(z));
@@ -1144,6 +1198,7 @@ public class TerrainQuad extends Node implements Terrain {
             this.z = z;
             this.h = h;
         }
+
     }
 
     protected void setHeight(List<LocationHeight> locations, boolean overrideHeight) {

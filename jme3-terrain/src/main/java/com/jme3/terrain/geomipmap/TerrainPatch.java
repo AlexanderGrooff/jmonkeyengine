@@ -625,7 +625,6 @@ public class TerrainPatch extends Geometry {
                 origin = new Vector3f(-halfSize * terrainQuad.stepScale.x, 0, 0);
                 tempOffset.x += origin.x / 2;
                 tempOffset.y += quarterSize * terrainQuad.stepScale.z;
-                System.out.println(tempOffset);
                 break;
             case 3:
                 origin = new Vector3f(0, 0, -halfSize * terrainQuad.stepScale.z);
