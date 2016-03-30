@@ -111,10 +111,17 @@ public class TerrainQuadTest {
         NeighbourFinder nf = new TestNeighbourFinder(roots[0], roots[1], roots[2], roots[3]);
         for (FakeTerrainQuad root : roots) {
             root.setNeighbourFinder(nf);
-            assertEquals(root.findQuad(0), nf.getRightQuad(root));
-            assertEquals(root.findQuad(1), nf.getDownQuad(root));
-            assertEquals(root.findQuad(2), nf.getLeftQuad(root));
-            assertEquals(root.findQuad(3), nf.getTopQuad(root));
+            // Legacy code
+            assertEquals(root.findRightQuad(), nf.getRightQuad(root));
+            assertEquals(root.findDownQuad(), nf.getDownQuad(root));
+            assertEquals(root.findLeftQuad(), nf.getLeftQuad(root));
+            assertEquals(root.findTopQuad(), nf.getTopQuad(root));
+
+            // Refactored code
+            assertEquals(root.findQuad(DIR_RIGHT), nf.getRightQuad(root));
+            assertEquals(root.findQuad(DIR_DOWN), nf.getDownQuad(root));
+            assertEquals(root.findQuad(DIR_LEFT), nf.getLeftQuad(root));
+            assertEquals(root.findQuad(DIR_TOP), nf.getTopQuad(root));
         }
     }
 
