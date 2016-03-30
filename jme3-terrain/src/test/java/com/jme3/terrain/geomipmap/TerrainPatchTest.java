@@ -1,39 +1,13 @@
 package com.jme3.terrain.geomipmap;
 
 import com.jme3.scene.Spatial;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TerrainPatchTest {
 
     final int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
-    private FakeTerrainQuad parentTerrainQuad;
-    private FakeTerrainQuad[] children = new FakeTerrainQuad[4];
-
-    @Before
-    public void init() {
-        for (int i = 0; i < 4; i++) {
-            children[i] = new FakeTerrainQuad();
-        }
-
-        parentTerrainQuad = new FakeTerrainQuad();
-        fakeCreateQuad(parentTerrainQuad, children);
-    }
-
-    private void fakeCreateQuad(FakeTerrainQuad parent, FakeTerrainQuad[] children) {
-        for (int i = 0; i < children.length; i++) {
-            children[i].quadrant = i + 1; // Quadrant starts counting from 1
-            parent.attachChild(children[i]);
-        }
-    }
 
     /**
      * Used to recursively create a nested structure of {@link Spatial}s.
