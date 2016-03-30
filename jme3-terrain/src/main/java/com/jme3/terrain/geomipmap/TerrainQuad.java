@@ -1579,11 +1579,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 2)
             return pQuad.getQuad(4);
         else if (quadrant == 3) {
-            TerrainQuad quad = pQuad.findQuad(DIR_RIGHT);
+            TerrainQuad quad = pQuad.findRightQuad();
             if (quad != null)
                 return quad.getQuad(1);
         } else if (quadrant == 4) {
-            TerrainQuad quad = pQuad.findQuad(DIR_RIGHT);
+            TerrainQuad quad = pQuad.findRightQuad();
             if (quad != null)
                 return quad.getQuad(2);
         } else if (quadrant == 0) {
@@ -1616,11 +1616,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 3)
             return pQuad.getQuad(4);
         else if (quadrant == 2) {
-            TerrainQuad quad = pQuad.findQuad(DIR_DOWN);
+            TerrainQuad quad = pQuad.findDownQuad();
             if (quad != null)
                 return quad.getQuad(1);
         } else if (quadrant == 4) {
-            TerrainQuad quad = pQuad.findQuad(DIR_DOWN);
+            TerrainQuad quad = pQuad.findDownQuad();
             if (quad != null)
                 return quad.getQuad(3);
         } else if (quadrant == 0) {
@@ -1653,11 +1653,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 4)
             return pQuad.getQuad(3);
         else if (quadrant == 1) {
-            TerrainQuad quad = pQuad.findQuad(DIR_TOP);
+            TerrainQuad quad = pQuad.findTopQuad();
             if (quad != null)
                 return quad.getQuad(2);
         } else if (quadrant == 3) {
-            TerrainQuad quad = pQuad.findQuad(DIR_TOP);
+            TerrainQuad quad = pQuad.findTopQuad();
             if (quad != null)
                 return quad.getQuad(4);
         } else if (quadrant == 0) {
@@ -1690,11 +1690,11 @@ public class TerrainQuad extends Node implements Terrain {
         else if (quadrant == 4)
             return pQuad.getQuad(2);
         else if (quadrant == 1) {
-            TerrainQuad quad = pQuad.findQuad(DIR_LEFT);
+            TerrainQuad quad = pQuad.findLeftQuad();
             if (quad != null)
                 return quad.getQuad(3);
         } else if (quadrant == 2) {
-            TerrainQuad quad = pQuad.findQuad(DIR_LEFT);
+            TerrainQuad quad = pQuad.findLeftQuad();
             if (quad != null)
                 return quad.getQuad(4);
         } else if (quadrant == 0) {
