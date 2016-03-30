@@ -59,35 +59,8 @@ public class TerrainQuadTest {
 
 
         terrainQuad = new TerrainQuad("terrain_1", 3, 5, heightmap.getHeightMap());
-
-
-        TerrainPatch tp0 = (TerrainPatch) terrainQuad.getChild(0);
-        System.out.println("tp 0 heightmap: " + tp0.getHeightMap().length);
-        for (int i = 0; i < 9; i++) {
-            System.out.println("tp 0 heightmap: " + tp0.getHeightMap()[i]);
-        }
-        TerrainPatch tp1 = (TerrainPatch) terrainQuad.getChild(1);
-        for (int i = 0; i < 9; i++) {
-            System.out.println("tp 1 heightmap: " + tp1.getHeightMap()[i]);
-        }
-        TerrainPatch tp2 = (TerrainPatch) terrainQuad.getChild(2);
-        for (int i = 0; i < 9; i++) {
-            System.out.println("tp 2 heightmap: " + tp2.getHeightMap()[i]);
-        }
-        TerrainPatch tp3 = (TerrainPatch) terrainQuad.getChild(3);
-        for (int i = 0; i < 9; i++) {
-            System.out.println("tp 3 heightmap: " + tp3.getHeightMap()[i]);
-        }
-
-
         testHeightmap = heightmap.getHeightMap();
 
-        for (int i = 0; i < testHeightmap.length; i++) {
-            System.out.println("heightmap values: " + testHeightmap[i]);
-        }
-
-//        parentTerrainQuad = new FakeTerrainQuad();
-//        fakeCreateQuad(parentTerrainQuad, children);
     }
 
     private void fakeCreateQuad(FakeTerrainQuad parent, FakeTerrainQuad[] children) {
@@ -322,8 +295,23 @@ public class TerrainQuadTest {
         fakeCreateQuad(parentTerrainQuad, children);
 
         assertEquals(null, parentTerrainQuad.getMeshNormal(5, 49));
+    }
 
+    @Test
+    public void getHeight() {
+        assertEquals(Float.NaN, terrainQuad.getHeight(10, 10, 10.0f, 10.0f), 0.0f);
+        assertEquals(2.9181213f, terrainQuad.getHeight(0, 0, 0.0f, 0.0f), 0.0f);
 
+        children = new FakeTerrainQuad[3];
+        for (int i = 0; i < 3; i++) {
+            children[i] = new FakeTerrainQuad();
+        }
+
+        parentTerrainQuad = new FakeTerrainQuad();
+        parentTerrainQuad.size = 10;
+        fakeCreateQuad(parentTerrainQuad, children);
+
+        assertEquals(Float.NaN, parentTerrainQuad.getHeight(0, 0, 0.0f, 0.0f), 0.0f);
     }
 
 

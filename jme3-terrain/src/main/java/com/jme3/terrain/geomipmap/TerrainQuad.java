@@ -48,7 +48,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
-import com.jme3.scene.shape.Quad;
 import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculator;
@@ -862,8 +861,12 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
     /**
-     * This will just get the heightmap value at the supplied point,
-     * not an interpolated (actual) height value.
+     * <code>getHeightmapHeight</code> retrieves the heightmap value based on the quadrant of the supplied coordinates,
+     * not and interpolated (actual) height value.
+     *
+     * @param x int x-coordinate
+     * @param z int z-coordinate
+     * @return Float heightMapHeight
      */
     protected float getHeightmapHeight(int x, int z) {
         QuadrantFinder qf = new QuadrantFinder(x, z);
@@ -880,54 +883,13 @@ public class TerrainQuad extends Node implements Terrain {
         return Float.NaN;
     }
 
-//    protected void getMatch(int x, int z) {
-//
-//        int quad = findQuadrant(x, z);
-//        int split = (size + 1) >> 1;
-//        if (children != null) {
-//            for (int i = children.size(); --i >= 0; ) {
-//                Spatial spat = children.get(i);
-//                int col = x;
-//                int row = z;
-//                boolean match = false;
-//
-//                // get the childs quadrant
-//                int childQuadrant = 0;
-//                if (spat instanceof TerrainQuad) {
-//                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-//                } else if (spat instanceof TerrainPatch) {
-//                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-//                }
-//
-//                if (childQuadrant == 1 && (quad & 1) != 0) {
-//                    match = true;
-//                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-//                    row = z - split + 1;
-//                    match = true;
-//                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-//                    col = x - split + 1;
-//                    match = true;
-//                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-//                    col = x - split + 1;
-//                    row = z - split + 1;
-//                    match = true;
-//                }
-//
-//                if (match) {
-//                    if (spat instanceof TerrainQuad) {
-//                        ((TerrainQuad) spat).getHeightmapHeight(col, row);
-//                    } else if (spat instanceof TerrainPatch) {
-//                        ((TerrainPatch) spat).getHeightmapHeight(col, row);
-//                    }
-//                }
-//
-//            }
-//        }
-//        heightmapHeight = Float.NaN;
-//
-//    }
-
-
+    /**
+     * <code>getMeshNormal</code> retrieves the MeshNormal value based on the quadrant of the supplied coordinates.
+     *
+     * @param x int x-coordinate
+     * @param z int z-coordinate
+     * @return Vector3f meshNormal
+     */
     protected Vector3f getMeshNormal(int x, int z) {
         QuadrantFinder qf = new QuadrantFinder(x, z);
         qf.invoke();
@@ -971,6 +933,13 @@ public class TerrainQuad extends Node implements Terrain {
         }
     }
 
+    /**
+     * <code>findMatchingChild</code> returns a new QuadrantChild object based on the quadrant of the supplied coordinates.
+     *
+     * @param x int x-coordinate
+     * @param z int z-coordinate
+     * @return QuadrantChild object
+     */
     private QuadrantChild findMatchingChild(int x, int z) {
         QuadrantFinder qf = new QuadrantFinder(x, z);
         qf.invoke();
