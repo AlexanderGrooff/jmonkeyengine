@@ -1378,12 +1378,12 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(4);
         else if (tp.getQuadrant() == 3) {
             // find the patch to the right and ask it for child 1.
-            TerrainQuad quad = findQuad(DIR_RIGHT);
+            TerrainQuad quad = findRightQuad();
             if (quad != null)
                 return quad.getPatch(1);
         } else if (tp.getQuadrant() == 4) {
             // find the patch to the right and ask it for child 2.
-            TerrainQuad quad = findQuad(DIR_RIGHT);
+            TerrainQuad quad = findRightQuad();
             if (quad != null)
                 return quad.getPatch(2);
         }
@@ -1399,11 +1399,11 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(4);
         else if (tp.getQuadrant() == 2) {
             // find the patch below and ask it for child 1.
-            TerrainQuad quad = findQuad(DIR_DOWN);
+            TerrainQuad quad = findDownQuad();
             if (quad != null)
                 return quad.getPatch(1);
         } else if (tp.getQuadrant() == 4) {
-            TerrainQuad quad = findQuad(DIR_DOWN);
+            TerrainQuad quad = findDownQuad();
             if (quad != null)
                 return quad.getPatch(3);
         }
@@ -1419,11 +1419,11 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(3);
         else if (tp.getQuadrant() == 1) {
             // find the patch above and ask it for child 2.
-            TerrainQuad quad = findQuad(DIR_TOP);
+            TerrainQuad quad = findTopQuad();
             if (quad != null)
                 return quad.getPatch(2);
         } else if (tp.getQuadrant() == 3) {
-            TerrainQuad quad = findQuad(DIR_TOP);
+            TerrainQuad quad = findTopQuad();
             if (quad != null)
                 return quad.getPatch(4);
         }
@@ -1439,11 +1439,11 @@ public class TerrainQuad extends Node implements Terrain {
             return getPatch(2);
         else if (tp.getQuadrant() == 1) {
             // find the patch above and ask it for child 3.
-            TerrainQuad quad = findQuad(DIR_LEFT);
+            TerrainQuad quad = findLeftQuad();
             if (quad != null)
                 return quad.getPatch(3);
         } else if (tp.getQuadrant() == 2) {
-            TerrainQuad quad = findQuad(DIR_LEFT);
+            TerrainQuad quad = findLeftQuad();
             if (quad != null)
                 return quad.getPatch(4);
         }
