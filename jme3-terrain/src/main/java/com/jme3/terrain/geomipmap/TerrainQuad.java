@@ -1836,7 +1836,6 @@ public class TerrainQuad extends Node implements Terrain {
     public class QuadrantFinder {
         private int x;
         private int z;
-        private int i;
         private Spatial spat;
         private int col;
         private int row;
