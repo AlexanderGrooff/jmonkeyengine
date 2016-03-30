@@ -1370,6 +1370,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainPatch findRightPatch(TerrainPatch tp) {
         if (tp.getQuadrant() == 1)
             return getPatch(3);
@@ -1390,6 +1391,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainPatch findDownPatch(TerrainPatch tp) {
         if (tp.getQuadrant() == 1)
             return getPatch(2);
@@ -1409,7 +1411,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
-
+    @Deprecated
     protected TerrainPatch findTopPatch(TerrainPatch tp) {
         if (tp.getQuadrant() == 2)
             return getPatch(1);
@@ -1429,6 +1431,7 @@ public class TerrainQuad extends Node implements Terrain {
         return null;
     }
 
+    @Deprecated
     protected TerrainPatch findLeftPatch(TerrainPatch tp) {
         if (tp.getQuadrant() == 3)
             return getPatch(1);
