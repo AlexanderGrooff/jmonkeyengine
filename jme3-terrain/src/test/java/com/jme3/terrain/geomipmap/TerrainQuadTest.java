@@ -271,27 +271,27 @@ public class TerrainQuadTest {
     @Test
     public void testGetHeightmapHeight() {
         assertEquals(0.0f, terrainQuad.getHeightmapHeight(6, 6), 0.0f);
-//        assertEquals(testHeightmap[0], terrainQuad.getHeightmapHeight(0, 0), 0.0f);
-//        children = new FakeTerrainQuad[3];
-//        for (int i = 0; i < 3; i++) {
-//            children[i] = new FakeTerrainQuad();
-//        }
-//
-//        parentTerrainQuad = new FakeTerrainQuad();
-//        parentTerrainQuad.size = 10;
-//        fakeCreateQuad(parentTerrainQuad, children);
-//
-//        assertEquals(Float.NaN, parentTerrainQuad.getHeightmapHeight(5, 3), 0.0f);
-//
-//        children = new FakeTerrainQuad[2];
-//        for (int i = 0; i < 2; i++) {
-//            children[i] = new FakeTerrainQuad();
-//        }
-//        parentTerrainQuad = new FakeTerrainQuad();
-//        parentTerrainQuad.size = 50;
-//        fakeCreateQuad(parentTerrainQuad, children);
-//
-//        assertEquals(Float.NaN, parentTerrainQuad.getHeightmapHeight(5, 49), 0.0f);
+        assertEquals(testHeightmap[0], terrainQuad.getHeightmapHeight(0, 0), 0.0f);
+        children = new FakeTerrainQuad[3];
+        for (int i = 0; i < 3; i++) {
+            children[i] = new FakeTerrainQuad();
+        }
+
+        parentTerrainQuad = new FakeTerrainQuad();
+        parentTerrainQuad.size = 10;
+        fakeCreateQuad(parentTerrainQuad, children);
+
+        assertEquals(Float.NaN, parentTerrainQuad.getHeightmapHeight(5, 3), 0.0f);
+
+        children = new FakeTerrainQuad[2];
+        for (int i = 0; i < 2; i++) {
+            children[i] = new FakeTerrainQuad();
+        }
+        parentTerrainQuad = new FakeTerrainQuad();
+        parentTerrainQuad.size = 50;
+        fakeCreateQuad(parentTerrainQuad, children);
+
+        assertEquals(Float.NaN, parentTerrainQuad.getHeightmapHeight(5, 49), 0.0f);
 
 
     }

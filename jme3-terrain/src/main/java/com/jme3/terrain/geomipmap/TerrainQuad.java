@@ -48,6 +48,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
+import com.jme3.scene.shape.Quad;
 import com.jme3.terrain.ProgressMonitor;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculator;
@@ -865,49 +866,17 @@ public class TerrainQuad extends Node implements Terrain {
      * not an interpolated (actual) height value.
      */
     protected float getHeightmapHeight(int x, int z) {
-        int quad = findQuadrant(x, z);
-        int split = (size + 1) >> 1;
-        if (children != null) {
-            for (int i = children.size(); --i >= 0; ) {
-                Spatial spat = children.get(i);
-                int col = x;
-                int row = z;
-                boolean match = false;
+        QuadrantFinder qf = new QuadrantFinder(x, z);
+        qf.invoke();
 
-                // get the childs quadrant
-                int childQuadrant = 0;
-                if (spat instanceof TerrainQuad) {
-                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-                } else if (spat instanceof TerrainPatch) {
-                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-                }
-
-                if (childQuadrant == 1 && (quad & 1) != 0) {
-                    match = true;
-                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-                    row = z - split + 1;
-                    match = true;
-                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-                    col = x - split + 1;
-                    match = true;
-                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-                    col = x - split + 1;
-                    row = z - split + 1;
-                    match = true;
-                }
-
-                if (match) {
-                    if (spat instanceof TerrainQuad) {
-                        return ((TerrainQuad) spat).getHeightmapHeight(col, row);
-                    } else if (spat instanceof TerrainPatch) {
-                        return ((TerrainPatch) spat).getHeightmapHeight(col, row);
-                    }
-                }
-
+        if (qf.isMatch()) {
+            if (qf.spat instanceof TerrainQuad) {
+                return ((TerrainQuad) qf.spat).getHeightmapHeight(qf.col, qf.row);
+            } else if (qf.spat instanceof TerrainPatch) {
+                return ((TerrainPatch) qf.spat).getHeightmapHeight(qf.col, qf.row);
             }
         }
 
-        //getMatch(x, z);
         return Float.NaN;
     }
 
@@ -960,47 +929,17 @@ public class TerrainQuad extends Node implements Terrain {
 
 
     protected Vector3f getMeshNormal(int x, int z) {
-        int quad = findQuadrant(x, z);
-        int split = (size + 1) >> 1;
-        if (children != null) {
-            for (int i = children.size(); --i >= 0; ) {
-                Spatial spat = children.get(i);
-                int col = x;
-                int row = z;
-                boolean match = false;
+        QuadrantFinder qf = new QuadrantFinder(x, z);
+        qf.invoke();
 
-                // get the childs quadrant
-                int childQuadrant = 0;
-                if (spat instanceof TerrainQuad) {
-                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-                } else if (spat instanceof TerrainPatch) {
-                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-                }
-
-                if (childQuadrant == 1 && (quad & 1) != 0) {
-                    match = true;
-                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-                    row = z - split + 1;
-                    match = true;
-                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-                    col = x - split + 1;
-                    match = true;
-                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-                    col = x - split + 1;
-                    row = z - split + 1;
-                    match = true;
-                }
-
-                if (match) {
-                    if (spat instanceof TerrainQuad) {
-                        return ((TerrainQuad) spat).getMeshNormal(col, row);
-                    } else if (spat instanceof TerrainPatch) {
-                        return ((TerrainPatch) spat).getMeshNormal(col, row);
-                    }
-                }
-
+        if (qf.match) {
+            if (qf.spat instanceof TerrainQuad) {
+                return ((TerrainQuad) qf.spat).getMeshNormal(qf.col, qf.row);
+            } else if (qf.spat instanceof TerrainPatch) {
+                return ((TerrainPatch) qf.spat).getMeshNormal(qf.col, qf.row);
             }
         }
+
         return null;
     }
 
@@ -1033,40 +972,12 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
     private QuadrantChild findMatchingChild(int x, int z) {
-        int quad = findQuadrant(x, z);
-        int split = (size + 1) >> 1;
-        if (children != null) {
-            for (int i = children.size(); --i >= 0; ) {
-                Spatial spat = children.get(i);
-                int col = x;
-                int row = z;
-                boolean match = false;
+        QuadrantFinder qf = new QuadrantFinder(x, z);
+        qf.invoke();
 
-                // get the childs quadrant
-                int childQuadrant = 0;
-                if (spat instanceof TerrainQuad) {
-                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-                } else if (spat instanceof TerrainPatch) {
-                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-                }
+        if (qf.isMatch())
+            return new QuadrantChild(qf.col, qf.row, qf.spat);
 
-                if (childQuadrant == 1 && (quad & 1) != 0) {
-                    match = true;
-                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-                    row = z - split + 1;
-                    match = true;
-                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-                    col = x - split + 1;
-                    match = true;
-                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-                    col = x - split + 1;
-                    row = z - split + 1;
-                    match = true;
-                }
-                if (match)
-                    return new QuadrantChild(col, row, spat);
-            }
-        }
         return null;
     }
 
@@ -1920,6 +1831,64 @@ public class TerrainQuad extends Node implements Terrain {
         }
 
         return hm;
+    }
+
+    public class QuadrantFinder {
+        private int x;
+        private int z;
+        private int i;
+        private Spatial spat;
+        private int col;
+        private int row;
+        private boolean match;
+
+        public QuadrantFinder(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        public boolean isMatch() {
+            return this.match;
+        }
+
+        public boolean invoke() {
+            int quad = findQuadrant(this.x, this.z);
+            int split = (size + 1) >> 1;
+
+            if (children != null) {
+                for (int i = children.size(); --i >= 0; ) {
+                    this.spat = children.get(i);
+
+                    // get the childs quadrant
+                    int childQuadrant = 0;
+                    if (this.spat instanceof TerrainQuad) {
+                        childQuadrant = ((TerrainQuad) this.spat).getQuadrant();
+                    } else if (this.spat instanceof TerrainPatch) {
+                        childQuadrant = ((TerrainPatch) this.spat).getQuadrant();
+                    }
+
+                    if (childQuadrant == 1 && (quad & 1) != 0) {
+                        this.match = true;
+                    } else if (childQuadrant == 2 && (quad & 2) != 0) {
+                        this.row = this.z - split + 1;
+                        this.match = true;
+                    } else if (childQuadrant == 3 && (quad & 4) != 0) {
+                        this.col = this.x - split + 1;
+                        this.match = true;
+                    } else if (childQuadrant == 4 && (quad & 8) != 0) {
+                        this.col = this.x - split + 1;
+                        this.row = this.z - split + 1;
+                        this.match = true;
+                    }
+
+                    if (this.match) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
 
