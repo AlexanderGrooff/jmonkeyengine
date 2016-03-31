@@ -108,6 +108,10 @@ import java.util.logging.Logger;
  * @author Brent Owens
  */
 public class TerrainQuad extends Node implements Terrain {
+
+    private Vector3f meshNormal;
+    private float heightmapHeight;
+
     protected Vector2f offset;
 
     protected int totalSize; // the size of this entire terrain tree (on one side)
@@ -364,7 +368,7 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
 
-    protected boolean calculateLod(List<Vector3f> location, HashMap<String, UpdatedTerrainPatch> updates, LodCalculator lodCalculator) {
+    protected boolean hasLodChanged(List<Vector3f> location, HashMap<String, UpdatedTerrainPatch> updates, LodCalculator lodCalculator) {
 
         boolean lodChanged = false;
 
@@ -373,7 +377,7 @@ public class TerrainQuad extends Node implements Terrain {
             for (int i = children.size(); --i >= 0; ) {
                 Spatial child = children.get(i);
                 if (child instanceof TerrainQuad) {
-                    boolean b = ((TerrainQuad) child).calculateLod(location, updates, lodCalculator);
+                    boolean b = ((TerrainQuad) child).hasLodChanged(location, updates, lodCalculator);
                     if (b)
                         lodChanged = true;
                 } else if (child instanceof TerrainPatch) {
@@ -810,8 +814,8 @@ public class TerrainQuad extends Node implements Terrain {
      * Does this by looking at the affectedAreaBBox bounding box. If the bbox
      * exists already, then it will grow the box to fit the new changedPoint.
      * If the affectedAreaBBox is null, then it will create one of unit size.
-     *
-     * @param needToRecalculateNormals if null, will cause needToRecalculateNormals() to return false
+     * <p>
+     * needToRecalculateNormals if null, will cause needToRecalculateNormals() to return false
      */
     protected void setNormalRecalcNeeded(Vector2f changedPoint) {
         if (changedPoint == null) { // set needToRecalculateNormals() to false
@@ -857,96 +861,47 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
     /**
-     * This will just get the heightmap value at the supplied point,
-     * not an interpolated (actual) height value.
+     * <code>getHeightmapHeight</code> retrieves the heightmap value based on the quadrant of the supplied coordinates,
+     * not and interpolated (actual) height value.
+     *
+     * @param x int x-coordinate
+     * @param z int z-coordinate
+     * @return Float heightMapHeight
      */
     protected float getHeightmapHeight(int x, int z) {
-        int quad = findQuadrant(x, z);
-        int split = (size + 1) >> 1;
-        if (children != null) {
-            for (int i = children.size(); --i >= 0; ) {
-                Spatial spat = children.get(i);
-                int col = x;
-                int row = z;
-                boolean match = false;
+        QuadrantFinder qf = new QuadrantFinder(x, z);
+        qf.invoke();
 
-                // get the childs quadrant
-                int childQuadrant = 0;
-                if (spat instanceof TerrainQuad) {
-                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-                } else if (spat instanceof TerrainPatch) {
-                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-                }
-
-                if (childQuadrant == 1 && (quad & 1) != 0) {
-                    match = true;
-                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-                    row = z - split + 1;
-                    match = true;
-                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-                    col = x - split + 1;
-                    match = true;
-                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-                    col = x - split + 1;
-                    row = z - split + 1;
-                    match = true;
-                }
-
-                if (match) {
-                    if (spat instanceof TerrainQuad) {
-                        return ((TerrainQuad) spat).getHeightmapHeight(col, row);
-                    } else if (spat instanceof TerrainPatch) {
-                        return ((TerrainPatch) spat).getHeightmapHeight(col, row);
-                    }
-                }
-
+        if (qf.isMatch()) {
+            if (qf.spat instanceof TerrainQuad) {
+                return ((TerrainQuad) qf.spat).getHeightmapHeight(qf.col, qf.row);
+            } else if (qf.spat instanceof TerrainPatch) {
+                return ((TerrainPatch) qf.spat).getHeightmapHeight(qf.col, qf.row);
             }
         }
+
         return Float.NaN;
     }
 
+    /**
+     * <code>getMeshNormal</code> retrieves the MeshNormal value based on the quadrant of the supplied coordinates.
+     *
+     * @param x int x-coordinate
+     * @param z int z-coordinate
+     * @return Vector3f meshNormal
+     */
     protected Vector3f getMeshNormal(int x, int z) {
-        int quad = findQuadrant(x, z);
-        int split = (size + 1) >> 1;
-        if (children != null) {
-            for (int i = children.size(); --i >= 0; ) {
-                Spatial spat = children.get(i);
-                int col = x;
-                int row = z;
-                boolean match = false;
+        QuadrantFinder qf = new QuadrantFinder(x, z);
+        qf.invoke();
 
-                // get the childs quadrant
-                int childQuadrant = 0;
-                if (spat instanceof TerrainQuad) {
-                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-                } else if (spat instanceof TerrainPatch) {
-                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-                }
-
-                if (childQuadrant == 1 && (quad & 1) != 0) {
-                    match = true;
-                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-                    row = z - split + 1;
-                    match = true;
-                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-                    col = x - split + 1;
-                    match = true;
-                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-                    col = x - split + 1;
-                    row = z - split + 1;
-                    match = true;
-                }
-
-                if (match) {
-                    if (spat instanceof TerrainQuad) {
-                        return ((TerrainQuad) spat).getMeshNormal(col, row);
-                    } else if (spat instanceof TerrainPatch) {
-                        return ((TerrainPatch) spat).getMeshNormal(col, row);
-                    }
-                }
-
+        if (qf.match) {
+            if (qf.spat instanceof TerrainQuad) {
+                return ((TerrainQuad) qf.spat).getMeshNormal(qf.col, qf.row);
+            } else if (qf.spat instanceof TerrainPatch) {
+                return ((TerrainPatch) qf.spat).getMeshNormal(qf.col, qf.row);
             }
         }
+
         return null;
     }
 
@@ -978,41 +933,20 @@ public class TerrainQuad extends Node implements Terrain {
         }
     }
 
+    /**
+     * <code>findMatchingChild</code> returns a new QuadrantChild object based on the quadrant of the supplied coordinates.
+     *
+     * @param x int x-coordinate
+     * @param z int z-coordinate
+     * @return QuadrantChild object
+     */
     private QuadrantChild findMatchingChild(int x, int z) {
-        int quad = findQuadrant(x, z);
-        int split = (size + 1) >> 1;
-        if (children != null) {
-            for (int i = children.size(); --i >= 0; ) {
-                Spatial spat = children.get(i);
-                int col = x;
-                int row = z;
-                boolean match = false;
+        QuadrantFinder qf = new QuadrantFinder(x, z);
+        qf.invoke();
 
-                // get the childs quadrant
-                int childQuadrant = 0;
-                if (spat instanceof TerrainQuad) {
-                    childQuadrant = ((TerrainQuad) spat).getQuadrant();
-                } else if (spat instanceof TerrainPatch) {
-                    childQuadrant = ((TerrainPatch) spat).getQuadrant();
-                }
+        if (qf.isMatch())
+            return new QuadrantChild(qf.col, qf.row, qf.spat);
 
-                if (childQuadrant == 1 && (quad & 1) != 0) {
-                    match = true;
-                } else if (childQuadrant == 2 && (quad & 2) != 0) {
-                    row = z - split + 1;
-                    match = true;
-                } else if (childQuadrant == 3 && (quad & 4) != 0) {
-                    col = x - split + 1;
-                    match = true;
-                } else if (childQuadrant == 4 && (quad & 8) != 0) {
-                    col = x - split + 1;
-                    row = z - split + 1;
-                    match = true;
-                }
-                if (match)
-                    return new QuadrantChild(col, row, spat);
-            }
-        }
         return null;
     }
 
@@ -1072,7 +1006,7 @@ public class TerrainQuad extends Node implements Terrain {
         // v3--v4  | Z
         //         |
         // <-------Y
-        //     X 
+        //     X
         Vector3f n1 = getMeshNormal((int) FastMath.ceil(x), (int) FastMath.ceil(z));
         Vector3f n2 = getMeshNormal((int) FastMath.floor(x), (int) FastMath.ceil(z));
         Vector3f n3 = getMeshNormal((int) FastMath.ceil(x), (int) FastMath.floor(z));
@@ -1144,6 +1078,7 @@ public class TerrainQuad extends Node implements Terrain {
             this.z = z;
             this.h = h;
         }
+
     }
 
     protected void setHeight(List<LocationHeight> locations, boolean overrideHeight) {
@@ -1865,6 +1800,63 @@ public class TerrainQuad extends Node implements Terrain {
         }
 
         return hm;
+    }
+
+    public class QuadrantFinder {
+        private int x;
+        private int z;
+        private Spatial spat;
+        private int col;
+        private int row;
+        private boolean match;
+
+        public QuadrantFinder(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        public boolean isMatch() {
+            return this.match;
+        }
+
+        public boolean invoke() {
+            int quad = findQuadrant(this.x, this.z);
+            int split = (size + 1) >> 1;
+
+            if (children != null) {
+                for (int i = children.size(); --i >= 0; ) {
+                    this.spat = children.get(i);
+
+                    // get the childs quadrant
+                    int childQuadrant = 0;
+                    if (this.spat instanceof TerrainQuad) {
+                        childQuadrant = ((TerrainQuad) this.spat).getQuadrant();
+                    } else if (this.spat instanceof TerrainPatch) {
+                        childQuadrant = ((TerrainPatch) this.spat).getQuadrant();
+                    }
+
+                    if (childQuadrant == 1 && (quad & 1) != 0) {
+                        this.match = true;
+                    } else if (childQuadrant == 2 && (quad & 2) != 0) {
+                        this.row = this.z - split + 1;
+                        this.match = true;
+                    } else if (childQuadrant == 3 && (quad & 4) != 0) {
+                        this.col = this.x - split + 1;
+                        this.match = true;
+                    } else if (childQuadrant == 4 && (quad & 8) != 0) {
+                        this.col = this.x - split + 1;
+                        this.row = this.z - split + 1;
+                        this.match = true;
+                    }
+
+                    if (this.match) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
 
