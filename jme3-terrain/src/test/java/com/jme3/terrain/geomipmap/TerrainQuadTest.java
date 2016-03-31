@@ -439,7 +439,7 @@ public class TerrainQuadTest {
     /**
      * Tests the calculateLod method, which name has been refactored to hasLodChanged.
      * We came to the conclusion that the method does belong to TerrainQuad, but should be renamed
-     * as it does not calculate anything. Is only retrieves values from users of the LodCalculator interface.
+     * as it does not calculate anything. Is only retrieves values from subclasses of the LodCalculator interface.
      * The actual lodCalculator is defined in the calculateLod method of these childs.
      */
     @Test
