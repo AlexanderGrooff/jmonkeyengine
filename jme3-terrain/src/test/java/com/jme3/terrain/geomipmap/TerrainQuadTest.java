@@ -263,9 +263,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindRightPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad topRightChild = (FakeTerrainQuad) root.getQuad(3);
 
         try {
             root.findRightPatch(null);
@@ -301,9 +301,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindDownPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad bottomLeftChild = (FakeTerrainQuad)root.getQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad bottomLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
         try {
             root.findDownPatch(null);
@@ -339,9 +339,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindLeftPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
-        FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
-        FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2);
+        FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
+        FakeTerrainQuad topRightChild = (FakeTerrainQuad) root.getQuad(3);
 
         try {
             root.findLeftPatch(null);
@@ -377,9 +377,9 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindTopPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
-        FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
-        FakeTerrainQuad bottomRightChild = (FakeTerrainQuad)root.getQuad(4);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2);
+        FakeTerrainQuad topRightChild = (FakeTerrainQuad) root.getQuad(3);
+        FakeTerrainQuad bottomRightChild = (FakeTerrainQuad) root.getQuad(4);
 
         try {
             root.findTopPatch(null);
@@ -415,7 +415,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2);
 
         assertEquals(root.quadrant, 0);
 
@@ -427,8 +427,8 @@ public class TerrainQuadTest {
         assertEquals(root.findQuad(DIR_LEFT), root.findLeftQuad());
         assertEquals(root.findQuad(DIR_TOP), root.findTopQuad());
 
-        for(int i = 0; i < root.getChildren().size(); i++) {
-            FakeTerrainQuad child = (FakeTerrainQuad)root.getQuad(i);
+        for (int i = 0; i < root.getChildren().size(); i++) {
+            FakeTerrainQuad child = (FakeTerrainQuad) root.getQuad(i);
             assertEquals(child.findQuad(DIR_RIGHT), child.findRightQuad());
             assertEquals(child.findQuad(DIR_DOWN), child.findDownQuad());
             assertEquals(child.findQuad(DIR_LEFT), child.findLeftQuad());
@@ -443,7 +443,7 @@ public class TerrainQuadTest {
      * The actual lodCalculator is defined in the calculateLod method of these childs.
      */
     @Test
-    public void testCalculateLod() {
+    public void testHasLodChanged() {
         FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
         assertFalse(root.hasLodChanged(location, updates, lodCalculator));
         assertTrue(root.hasLodChanged(location, updates, fakeLodCalculator));
