@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TerrainQuadTest {
 
@@ -102,30 +102,30 @@ public class TerrainQuadTest {
         return parent;
     }
 
-//    @Test
-//    public void testFakeTerrainQuad() {
-//        FakeTerrainQuad fake = new FakeTerrainQuad();
-//        assertEquals(fake, fake.getQuad(0));
-//    }
-//
-//    @Test
-//    public void testNestStructure() {
-//        Spatial leaf = createNestedQuad(0);
-//        assertTrue(leaf instanceof TerrainPatch);
-//
-//        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
-//        assertEquals(root.getChildren().size(), 4);
-//        for (int i = 0; i < 4; i++) {
-//            assertTrue(root.getChild(i) instanceof TerrainPatch); // Ensure children of root are leafs
-//        }
-//
-//        root = (FakeTerrainQuad) createNestedQuad(2);
-//        assertEquals(root.getChildren().size(), 4);
-//        for (int i = 0; i < 4; i++) {
-//            assertTrue(root.getChild(i) instanceof TerrainQuad); // Ensure children of root are not leafs
-//        }
-//    }
-//
+    @Test
+    public void testFakeTerrainQuad() {
+        FakeTerrainQuad fake = new FakeTerrainQuad();
+        assertEquals(fake, fake.getQuad(0));
+    }
+
+    @Test
+    public void testNestStructure() {
+        Spatial leaf = createNestedQuad(0);
+        assertTrue(leaf instanceof TerrainPatch);
+
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        assertEquals(root.getChildren().size(), 4);
+        for (int i = 0; i < 4; i++) {
+            assertTrue(root.getChild(i) instanceof TerrainPatch); // Ensure children of root are leafs
+        }
+
+        root = (FakeTerrainQuad) createNestedQuad(2);
+        assertEquals(root.getChildren().size(), 4);
+        for (int i = 0; i < 4; i++) {
+            assertTrue(root.getChild(i) instanceof TerrainQuad); // Ensure children of root are not leafs
+        }
+    }
+
 //    @Test
 //    public void testGetQuad() {
 //        assertEquals(parentTerrainQuad.getQuad(0), parentTerrainQuad);
@@ -135,112 +135,120 @@ public class TerrainQuadTest {
 //        assertEquals(parentTerrainQuad.getQuad(4), children[3]);
 //        assertEquals(parentTerrainQuad.getQuad(5), null);
 //    }
-//
-//
-//    /**
-//     * tests the calculateLod method.
-//     * Came to the conclusion that the method does belong to TerrainQuad, but should be renamed
-//     * as it does not calculate anything. Is only retrieves values from users of the LodCalculator interface.
-//     * The actual lodCalculator is defined in the calculateLod method of these childs.
-//     */
-//    @Test
-//    public void testCalculateLod() {
-//        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
-//        assertFalse(root.calculateLod(location, updates, lodCalculator));
-//        assertTrue(root.calculateLod(location, updates, fakeLodCalculator));
-//
-//        FakeTerrainQuad leaf = (FakeTerrainQuad) createNestedQuad(1);
-//        leaf.attachChild(children[1]);
-//        assertTrue(leaf.calculateLod(location, updates, fakeLodCalculator));
-//    }
 
-//    @Test
-//    public void testCreateQuadPatch1() {
-//        String patch1 = "terrain_1Patch1";
-//
-//
-//        boundingBox.setCenter(1.0f, 54.88082f, 1.0f);
-//        terrainQuad.setPatchChildren(testHeightmap);
-//
-//
-//        System.out.println(terrainQuad.getChildren());
-//
-//        assertTrue(terrainQuad.getChild(patch1) instanceof TerrainPatch);
-//        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch1);
-//
-//        assertEquals(patch1, p1.getName());
-//        assertEquals(v2f.set(-1.0f, -1.0f), p1.getOffset());
-//        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
-//        assertEquals(v3f.add(-2.0f, 0.0f, -2.0f), p1.getLocalTranslation());
-//        assertEquals(9, p1.getHeightMap().length);
-//        assertEquals(5, p1.getTotalSize());
-//        assertEquals(1, p1.getQuadrant());
-//        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
-//    }
-//
-//    @Test
-//    public void testCreateQuadPatch2() {
-//        String patch2 = "terrain_1Patch2";
-//
-//        boundingBox.setCenter(1.0f, 92.78813f, 1.0f);
-//
-//        terrainQuad.setPatchChildren(testHeightmap);
-//
-//        assertTrue(terrainQuad.getChild(patch2) instanceof TerrainPatch);
-//        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch2);
-//
-//        assertEquals(patch2, p1.getName());
-//        assertEquals(v2f.set(-1.0f, 1.0f), p1.getOffset());
-//        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
-//        assertEquals(v3f.add(-2.0f, 0.0f, 0.0f), p1.getLocalTranslation());
-//        assertEquals(9, p1.getHeightMap().length);
-//        assertEquals(5, p1.getTotalSize());
-//        assertEquals(2, p1.getQuadrant());
-//        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
-//    }
-//
-//    @Test
-//    public void testCreateQuadPatch3() {
-//        String patch3 = "terrain_1Patch3";
-//
-//        boundingBox.setCenter(1.0f, 64.86637f, 1.0f);
-//
-//        terrainQuad.setPatchChildren(testHeightmap);
-//
-//        assertTrue(terrainQuad.getChild(patch3) instanceof TerrainPatch);
-//        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch3);
-//
-//        assertEquals(patch3, p1.getName());
-//        assertEquals(v2f.set(1.0f, -1.0f), p1.getOffset());
-//        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
-//        assertEquals(v3f.add(0.0f, 0.0f, -2.0f), p1.getLocalTranslation());
-//        assertEquals(9, p1.getHeightMap().length);
-//        assertEquals(5, p1.getTotalSize());
-//        assertEquals(3, p1.getQuadrant());
-//        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
-//    }
-//
-//    @Test
-//    public void testCreateQuadPatch4() {
-//        String patch4 = "terrain_1Patch4";
-//
-//        boundingBox.setCenter(1.0f, 180.92175f, 1.0f);
-//
-//        terrainQuad.setPatchChildren(testHeightmap);
-//
-//        assertTrue(terrainQuad.getChild(patch4) instanceof TerrainPatch);
-//        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch4);
-//
-//        assertEquals(patch4, p1.getName());
-//        assertEquals(v2f.set(1.0f, 1.0f), p1.getOffset());
-//        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
-//        assertEquals(v3f.add(0.0f, 0.0f, 0.0f), p1.getLocalTranslation());
-//        assertEquals(9, p1.getHeightMap().length);
-//        assertEquals(5, p1.getTotalSize());
-//        assertEquals(4, p1.getQuadrant());
-//        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
-//    }
 
+    /**
+     * Tests the calculateLod method, which name has been refactored to hasLodChanged.
+     * We came to the conclusion that the method does belong to TerrainQuad, but should be renamed
+     * as it does not calculate anything. Is only retrieves values from users of the LodCalculator interface.
+     * The actual lodCalculator is defined in the calculateLod method of these childs.
+     */
+    @Test
+    public void testCalculateLod() {
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        assertFalse(root.hasLodChanged(location, updates, lodCalculator));
+        assertTrue(root.hasLodChanged(location, updates, fakeLodCalculator));
+
+        FakeTerrainQuad leaf = (FakeTerrainQuad) createNestedQuad(1);
+        leaf.attachChild(children[1]);
+        assertTrue(leaf.hasLodChanged(location, updates, fakeLodCalculator));
+    }
+
+
+    /**
+     * Tests the refactored createQuadPatch method, which name is refactored to setPatchChildren.
+     * setPatchChildren makes use of two new methods createHeightBlock and createQuadPatch (part of TerrainPatch).
+     * This is the first of 4 tests, as setPatchChildren couples 4 TerrainPatches to
+     * a TerrainQuad. Each tests makes sure that the correct TerrainPatch child has been coupled.
+     */
+    @Test
+    public void testSetPatchChildren1() {
+        String patch1 = "terrain_1Patch1";
+
+        boundingBox.setCenter(1.0f, 54.88082f, 1.0f);
+        terrainQuad.setPatchChildren(testHeightmap);
+
+        assertTrue(terrainQuad.getChild(patch1) instanceof TerrainPatch);
+        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch1);
+
+        assertEquals(patch1, p1.getName());
+        assertEquals(v2f.set(-1.0f, -1.0f), p1.getOffset());
+        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
+        assertEquals(v3f.add(-2.0f, 0.0f, -2.0f), p1.getLocalTranslation());
+        assertEquals(9, p1.getHeightMap().length);
+        assertEquals(5, p1.getTotalSize());
+        assertEquals(1, p1.getQuadrant());
+        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
+    }
+
+    @Test
+    public void testSetPatchChildren2() {
+        String patch2 = "terrain_1Patch2";
+
+        boundingBox.setCenter(1.0f, 92.78813f, 1.0f);
+
+        terrainQuad.setPatchChildren(testHeightmap);
+
+        assertTrue(terrainQuad.getChild(patch2) instanceof TerrainPatch);
+        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch2);
+
+        assertEquals(patch2, p1.getName());
+        assertEquals(v2f.set(-1.0f, 1.0f), p1.getOffset());
+        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
+        assertEquals(v3f.add(-2.0f, 0.0f, 0.0f), p1.getLocalTranslation());
+        assertEquals(9, p1.getHeightMap().length);
+        assertEquals(5, p1.getTotalSize());
+        assertEquals(2, p1.getQuadrant());
+        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
+    }
+
+    @Test
+    public void testSetPatchChildren3() {
+        String patch3 = "terrain_1Patch3";
+
+        boundingBox.setCenter(1.0f, 64.86637f, 1.0f);
+
+        terrainQuad.setPatchChildren(testHeightmap);
+
+        assertTrue(terrainQuad.getChild(patch3) instanceof TerrainPatch);
+        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch3);
+
+        assertEquals(patch3, p1.getName());
+        assertEquals(v2f.set(1.0f, -1.0f), p1.getOffset());
+        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
+        assertEquals(v3f.add(0.0f, 0.0f, -2.0f), p1.getLocalTranslation());
+        assertEquals(9, p1.getHeightMap().length);
+        assertEquals(5, p1.getTotalSize());
+        assertEquals(3, p1.getQuadrant());
+        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
+    }
+
+    @Test
+    public void testSetPatchChildren4() {
+        String patch4 = "terrain_1Patch4";
+
+        boundingBox.setCenter(1.0f, 180.92175f, 1.0f);
+
+        terrainQuad.setPatchChildren(testHeightmap);
+
+        assertTrue(terrainQuad.getChild(patch4) instanceof TerrainPatch);
+        TerrainPatch p1 = (TerrainPatch) terrainQuad.getChild(patch4);
+
+        assertEquals(patch4, p1.getName());
+        assertEquals(v2f.set(1.0f, 1.0f), p1.getOffset());
+        assertEquals(1.0f, p1.getOffsetAmount(), 0.0f);
+        assertEquals(v3f.add(0.0f, 0.0f, 0.0f), p1.getLocalTranslation());
+        assertEquals(9, p1.getHeightMap().length);
+        assertEquals(5, p1.getTotalSize());
+        assertEquals(4, p1.getQuadrant());
+        assertEquals(boundingBox.getCenter(), p1.getModelBound().getCenter());
+    }
+
+    /**
+     * Tests the method getHeightmapHeight(int x, int z).
+     * An extra internal class QuadrantFinder has been created to find the
+     * corresponding quadrant for the given coordinates.
+     */
     @Test
     public void testGetHeightmapHeight() {
         assertEquals(0.0f, terrainQuad.getHeightmapHeight(6, 6), 0.0f);
@@ -269,6 +277,11 @@ public class TerrainQuadTest {
 
     }
 
+    /**
+     * Tests the method getMeshNormal(int x, int z).
+     * An extra internal class QuadrantFinder has been created to find the
+     * corresponding quadrant for the given coordinates.
+     */
     @Test
     public void testGetMeshNormal() {
         Vector3f v1 = new Vector3f(-0.7327255f, 0.043074645f, -0.67915976f);
@@ -297,6 +310,13 @@ public class TerrainQuadTest {
         assertEquals(null, parentTerrainQuad.getMeshNormal(5, 49));
     }
 
+    /**
+     * Tests the method getHeight(int x, int z, float xm, float zm).
+     * This method is being tested to make sure the private method
+     * findMatchingChild(int x, int z) after its refactoring in which
+     * an extra internal class QuadrantFinder has been created to find the
+     * corresponding quadrant for the given coordinates.
+     */
     @Test
     public void getHeight() {
         assertEquals(Float.NaN, terrainQuad.getHeight(10, 10, 10.0f, 10.0f), 0.0f);

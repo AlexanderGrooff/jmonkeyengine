@@ -368,7 +368,7 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
 
-    protected boolean calculateLod(List<Vector3f> location, HashMap<String, UpdatedTerrainPatch> updates, LodCalculator lodCalculator) {
+    protected boolean hasLodChanged(List<Vector3f> location, HashMap<String, UpdatedTerrainPatch> updates, LodCalculator lodCalculator) {
 
         boolean lodChanged = false;
 
@@ -377,7 +377,7 @@ public class TerrainQuad extends Node implements Terrain {
             for (int i = children.size(); --i >= 0; ) {
                 Spatial child = children.get(i);
                 if (child instanceof TerrainQuad) {
-                    boolean b = ((TerrainQuad) child).calculateLod(location, updates, lodCalculator);
+                    boolean b = ((TerrainQuad) child).hasLodChanged(location, updates, lodCalculator);
                     if (b)
                         lodChanged = true;
                 } else if (child instanceof TerrainPatch) {
@@ -814,8 +814,8 @@ public class TerrainQuad extends Node implements Terrain {
      * Does this by looking at the affectedAreaBBox bounding box. If the bbox
      * exists already, then it will grow the box to fit the new changedPoint.
      * If the affectedAreaBBox is null, then it will create one of unit size.
-     *
-     * @param needToRecalculateNormals if null, will cause needToRecalculateNormals() to return false
+     * <p>
+     * needToRecalculateNormals if null, will cause needToRecalculateNormals() to return false
      */
     protected void setNormalRecalcNeeded(Vector2f changedPoint) {
         if (changedPoint == null) { // set needToRecalculateNormals() to false
