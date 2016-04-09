@@ -134,7 +134,7 @@ public class TerrainQuad extends Node implements Terrain {
     protected NeighbourFinder neighbourFinder;
 
     private final int DIR_RIGHT = 0, DIR_DOWN = 1, DIR_LEFT = 2, DIR_TOP = 3;
-    
+
     public TerrainQuad() {
         super("Terrain");
     }
@@ -370,6 +370,15 @@ public class TerrainQuad extends Node implements Terrain {
     }
 
 
+    /**
+     * <code>hasLodChanged</code> retrieves a boolean value based on the result of the calculateLod method
+     * in a lodCalculator subclass.
+     *
+     * @param location      the Vector3f location
+     * @param updates       HashMap with updates to the TerrainPatches
+     * @param lodCalculator the kind of lodCalculator
+     * @return
+     */
     protected boolean hasLodChanged(List<Vector3f> location, HashMap<String, UpdatedTerrainPatch> updates, LodCalculator lodCalculator) {
 
         boolean lodChanged = false;
@@ -1293,19 +1302,27 @@ public class TerrainQuad extends Node implements Terrain {
         if (quadrant == 0) {
             if (useFinder) {
                 switch (direction) {
-                    case DIR_RIGHT  : return neighbourFinder.getRightQuad(this);
-                    case DIR_DOWN   : return neighbourFinder.getDownQuad(this);
-                    case DIR_LEFT   : return neighbourFinder.getLeftQuad(this);
-                    case DIR_TOP    : return neighbourFinder.getTopQuad(this);
+                    case DIR_RIGHT:
+                        return neighbourFinder.getRightQuad(this);
+                    case DIR_DOWN:
+                        return neighbourFinder.getDownQuad(this);
+                    case DIR_LEFT:
+                        return neighbourFinder.getLeftQuad(this);
+                    case DIR_TOP:
+                        return neighbourFinder.getTopQuad(this);
                 }
             }
         }
 
         switch (direction) {
-            case DIR_RIGHT  : return getRightNeighbourQuad();
-            case DIR_DOWN   : return getDownNeighbourQuad();
-            case DIR_LEFT   : return getLeftNeighbourQuad();
-            case DIR_TOP    : return getTopNeighbourQuad();
+            case DIR_RIGHT:
+                return getRightNeighbourQuad();
+            case DIR_DOWN:
+                return getDownNeighbourQuad();
+            case DIR_LEFT:
+                return getLeftNeighbourQuad();
+            case DIR_TOP:
+                return getTopNeighbourQuad();
         }
 
         return null;
@@ -1315,14 +1332,17 @@ public class TerrainQuad extends Node implements Terrain {
         TerrainQuad pQuad = (TerrainQuad) getParent();
         TerrainQuad neighbourQuad;
         switch (quadrant) {
-            case 1: return pQuad.getQuad(3);
-            case 2: return pQuad.getQuad(4);
+            case 1:
+                return pQuad.getQuad(3);
+            case 2:
+                return pQuad.getQuad(4);
             case 3:
                 neighbourQuad = pQuad.findQuad(DIR_RIGHT);
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(1);
                 break;
-            case 4: case DIR_RIGHT:
+            case 4:
+            case DIR_RIGHT:
                 neighbourQuad = pQuad.findQuad(DIR_RIGHT);
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(2);
@@ -1335,12 +1355,15 @@ public class TerrainQuad extends Node implements Terrain {
         TerrainQuad pQuad = (TerrainQuad) getParent();
         TerrainQuad neighbourQuad;
         switch (quadrant) {
-            case 1: return pQuad.getQuad(2);
-            case 2: neighbourQuad = pQuad.findQuad(DIR_DOWN);
+            case 1:
+                return pQuad.getQuad(2);
+            case 2:
+                neighbourQuad = pQuad.findQuad(DIR_DOWN);
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(1);
                 break;
-            case 3: return pQuad.getQuad(4);
+            case 3:
+                return pQuad.getQuad(4);
             case 4:
                 neighbourQuad = pQuad.findQuad(DIR_DOWN);
                 if (neighbourQuad != null)
@@ -1364,8 +1387,10 @@ public class TerrainQuad extends Node implements Terrain {
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(4);
                 break;
-            case 3: return pQuad.getQuad(1);
-            case 4: return pQuad.getQuad(2);
+            case 3:
+                return pQuad.getQuad(1);
+            case 4:
+                return pQuad.getQuad(2);
         }
         return null;
     }
@@ -1379,13 +1404,15 @@ public class TerrainQuad extends Node implements Terrain {
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(2);
                 break;
-            case 2: return pQuad.getQuad(1);
+            case 2:
+                return pQuad.getQuad(1);
             case 3:
                 neighbourQuad = pQuad.findQuad(DIR_TOP);
                 if (neighbourQuad != null)
                     return neighbourQuad.getQuad(4);
                 break;
-            case 4: return pQuad.getQuad(3);
+            case 4:
+                return pQuad.getQuad(3);
         }
         return null;
     }
