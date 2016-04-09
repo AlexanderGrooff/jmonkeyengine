@@ -513,12 +513,12 @@ public class TerrainQuad extends Node implements Terrain {
         }
     }
 
-    private UpdatedTerrainPatch getUpdatedTerrainPatch(HashMap<String, UpdatedTerrainPatch> updated, TerrainPatch right) {
-        UpdatedTerrainPatch utpR = updated.get(right.getName());
+    private UpdatedTerrainPatch getUpdatedTerrainPatch(HashMap<String, UpdatedTerrainPatch> updated, TerrainPatch tp) {
+        UpdatedTerrainPatch utpR = updated.get(tp.getName());
         if (utpR == null) {
-            utpR = new UpdatedTerrainPatch(right);
+            utpR = new UpdatedTerrainPatch(tp);
             updated.put(utpR.getName(), utpR);
-            utpR.setNewLod(right.lod);
+            utpR.setNewLod(tp.lod);
         }
         return utpR;
     }
