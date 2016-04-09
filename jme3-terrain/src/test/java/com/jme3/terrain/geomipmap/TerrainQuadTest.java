@@ -444,7 +444,7 @@ public class TerrainQuadTest {
      */
     @Test
     public void testHasLodChanged() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1, "");
         assertFalse(root.hasLodChanged(location, updates, lodCalculator));
         assertTrue(root.hasLodChanged(location, updates, fakeLodCalculator));
 
