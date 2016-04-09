@@ -393,77 +393,51 @@ public class TerrainQuad extends Node implements Terrain {
         return lodChanged;
     }
 
-    protected synchronized void findNeighboursLod(HashMap<String, UpdatedTerrainPatch> updated) {
+    /**
+     * Look up and set the LOD of the TerrainQuads children.
+     * This will create an UpdatedTerrainPatch for every TerrainPatch child if there are none made so far.
+     * @param updated TerrainPatches that have an updated LOD.
+     */
+    protected synchronized void findNeighboursLod(HashMap<String,UpdatedTerrainPatch> updated) {
         if (children != null) {
             for (int x = children.size(); --x >= 0; ) {
                 Spatial child = children.get(x);
                 if (child instanceof TerrainQuad) {
                     ((TerrainQuad) child).findNeighboursLod(updated);
                 } else if (child instanceof TerrainPatch) {
-
                     TerrainPatch patch = (TerrainPatch) child;
-                    if (!patch.searchedForNeighboursAlready) {
-                        // set the references to the neighbours
-                        patch.rightNeighbour = patch.findPatch(DIR_RIGHT);
-                        patch.bottomNeighbour = patch.findPatch(DIR_DOWN);
-                        patch.leftNeighbour = patch.findPatch(DIR_LEFT);
-                        patch.topNeighbour = patch.findPatch(DIR_TOP);
-                        patch.searchedForNeighboursAlready = true;
-                    }
-                    TerrainPatch right = patch.rightNeighbour;
-                    TerrainPatch down = patch.bottomNeighbour;
-                    TerrainPatch left = patch.leftNeighbour;
-                    TerrainPatch top = patch.topNeighbour;
-
                     UpdatedTerrainPatch utp = updated.get(patch.getName());
+
+                    setPatchNeighbourReferences(patch);
+                    TerrainPatch[] neighbours = patch.getNeighbours();
+
                     if (utp == null) {
                         utp = new UpdatedTerrainPatch(patch, patch.lod);
                         updated.put(utp.getName(), utp);
                     }
 
-                    if (right != null) {
-                        UpdatedTerrainPatch utpR = updated.get(right.getName());
-                        if (utpR == null) {
-                            utpR = new UpdatedTerrainPatch(right);
-                            updated.put(utpR.getName(), utpR);
-                            utpR.setNewLod(right.lod);
-                        }
-                        utp.setRightLod(utpR.getNewLod());
-                        utpR.setLeftLod(utp.getNewLod());
-                    }
-                    if (down != null) {
-                        UpdatedTerrainPatch utpD = updated.get(down.getName());
-                        if (utpD == null) {
-                            utpD = new UpdatedTerrainPatch(down);
-                            updated.put(utpD.getName(), utpD);
-                            utpD.setNewLod(down.lod);
-                        }
-                        utp.setBottomLod(utpD.getNewLod());
-                        utpD.setTopLod(utp.getNewLod());
-                    }
+                    for (int direction = 0; direction < 4; direction++) {
+                        if (neighbours[direction] != null) {
+                            int oppositeDirection = (direction + 2) > 4 ? 4 - (direction + 2) : direction + 2;
 
-                    if (left != null) {
-                        UpdatedTerrainPatch utpL = updated.get(left.getName());
-                        if (utpL == null) {
-                            utpL = new UpdatedTerrainPatch(left);
-                            updated.put(utpL.getName(), utpL);
-                            utpL.setNewLod(left.lod);
+                            UpdatedTerrainPatch neighbourUtp = getUpdatedTerrainPatch(updated, neighbours[direction]);
+                            utp.setLod(neighbourUtp.getNewLod(), direction);
+                            neighbourUtp.setLod(utp.getNewLod(), oppositeDirection);
                         }
-                        utp.setLeftLod(utpL.getNewLod());
-                        utpL.setRightLod(utp.getNewLod());
-                    }
-                    if (top != null) {
-                        UpdatedTerrainPatch utpT = updated.get(top.getName());
-                        if (utpT == null) {
-                            utpT = new UpdatedTerrainPatch(top);
-                            updated.put(utpT.getName(), utpT);
-                            utpT.setNewLod(top.lod);
-                        }
-                        utp.setTopLod(utpT.getNewLod());
-                        utpT.setBottomLod(utp.getNewLod());
                     }
                 }
             }
+        }
+    }
+
+    private void setPatchNeighbourReferences(TerrainPatch patch) {
+        if (!patch.searchedForNeighboursAlready) {
+            // set the references to the neighbours
+            patch.rightNeighbour = patch.findPatch(DIR_RIGHT);
+            patch.bottomNeighbour = patch.findPatch(DIR_DOWN);
+            patch.leftNeighbour = patch.findPatch(DIR_LEFT);
+            patch.topNeighbour = patch.findPatch(DIR_TOP);
+            patch.searchedForNeighboursAlready = true;
         }
     }
 
@@ -489,6 +463,7 @@ public class TerrainQuad extends Node implements Terrain {
     /**
      * Find any neighbours that should have their edges seamed because another neighbour
      * changed its LOD to a greater value (less detailed)
+     * @param updated TerrainPatches that have an updated LOD.
      */
     protected synchronized void fixEdges(HashMap<String, UpdatedTerrainPatch> updated) {
         if (children != null) {
@@ -500,63 +475,34 @@ public class TerrainQuad extends Node implements Terrain {
                     TerrainPatch patch = (TerrainPatch) child;
                     UpdatedTerrainPatch utp = updated.get(patch.getName());
 
-                    if (utp != null && utp.lodChanged()) {
-                        if (!patch.searchedForNeighboursAlready) {
-                            // set the references to the neighbours
-                            patch.rightNeighbour = patch.findPatch(DIR_RIGHT);
-                            patch.bottomNeighbour = patch.findPatch(DIR_DOWN);
-                            patch.leftNeighbour = patch.findPatch(DIR_LEFT);
-                            patch.topNeighbour = patch.findPatch(DIR_TOP);
-                            patch.searchedForNeighboursAlready = true;
-                        }
-                        TerrainPatch right = patch.rightNeighbour;
-                        TerrainPatch down = patch.bottomNeighbour;
-                        TerrainPatch top = patch.topNeighbour;
-                        TerrainPatch left = patch.leftNeighbour;
-                        if (right != null) {
-                            UpdatedTerrainPatch utpR = updated.get(right.getName());
-                            if (utpR == null) {
-                                utpR = new UpdatedTerrainPatch(right);
-                                updated.put(utpR.getName(), utpR);
-                                utpR.setNewLod(right.lod);
+                    if(utp != null && utp.lodChanged()) {
+                        setPatchNeighbourReferences(patch);
+
+                        TerrainPatch[] neighbours = patch.getNeighbours();
+
+                        for (int direction = 0; direction < 4; direction++) {
+                            if (neighbours[direction] != null) {
+                                int oppositeDirection = (direction + 2) > 4 ? 4 - (direction + 2) : direction + 2;
+
+                                UpdatedTerrainPatch neighbourUtp = getUpdatedTerrainPatch(updated, neighbours[direction]);
+                                neighbourUtp.setLod(utp.getNewLod(), oppositeDirection);
+                                neighbourUtp.setFixEdges(true);
                             }
-                            utpR.setLeftLod(utp.getNewLod());
-                            utpR.setFixEdges(true);
-                        }
-                        if (down != null) {
-                            UpdatedTerrainPatch utpD = updated.get(down.getName());
-                            if (utpD == null) {
-                                utpD = new UpdatedTerrainPatch(down);
-                                updated.put(utpD.getName(), utpD);
-                                utpD.setNewLod(down.lod);
-                            }
-                            utpD.setTopLod(utp.getNewLod());
-                            utpD.setFixEdges(true);
-                        }
-                        if (top != null) {
-                            UpdatedTerrainPatch utpT = updated.get(top.getName());
-                            if (utpT == null) {
-                                utpT = new UpdatedTerrainPatch(top);
-                                updated.put(utpT.getName(), utpT);
-                                utpT.setNewLod(top.lod);
-                            }
-                            utpT.setBottomLod(utp.getNewLod());
-                            utpT.setFixEdges(true);
-                        }
-                        if (left != null) {
-                            UpdatedTerrainPatch utpL = updated.get(left.getName());
-                            if (utpL == null) {
-                                utpL = new UpdatedTerrainPatch(left);
-                                updated.put(utpL.getName(), utpL);
-                                utpL.setNewLod(left.lod);
-                            }
-                            utpL.setRightLod(utp.getNewLod());
-                            utpL.setFixEdges(true);
                         }
                     }
                 }
             }
         }
+    }
+
+    private UpdatedTerrainPatch getUpdatedTerrainPatch(HashMap<String, UpdatedTerrainPatch> updated, TerrainPatch tp) {
+        UpdatedTerrainPatch utpR = updated.get(tp.getName());
+        if (utpR == null) {
+            utpR = new UpdatedTerrainPatch(tp);
+            updated.put(utpR.getName(), utpR);
+            utpR.setNewLod(tp.lod);
+        }
+        return utpR;
     }
 
     protected synchronized void reIndexPages(HashMap<String, UpdatedTerrainPatch> updated, boolean usesVariableLod) {

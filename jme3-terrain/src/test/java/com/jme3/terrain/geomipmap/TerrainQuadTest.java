@@ -14,9 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -75,7 +73,6 @@ public class TerrainQuadTest {
         for (int i = 0; i < children.length; i++) {
             children[i].quadrant = i + 1; // Quadrant starts counting from 1
             parent.attachChild(children[i]);
-            //parent.getQuad(i).attachChild((tpChildren[i]));
         }
     }
 
@@ -87,14 +84,17 @@ public class TerrainQuadTest {
      * @param nestLevel Nest level to be created.
      * @return Nested structure of {@link Spatial}s
      */
-    private Spatial createNestedQuad(int nestLevel) {
+    private Spatial createNestedQuad(int nestLevel, String index) {
         if (nestLevel == 0) {
-            return new TerrainPatch();
+            TerrainPatch tp = new TerrainPatch();
+            tp.setName(index);
+            return tp;
         }
 
         FakeTerrainQuad parent = new FakeTerrainQuad();
+        parent.setName(index);
         for (int i = 0; i < 4; i++) {
-            Spatial child = createNestedQuad(nestLevel - 1);
+            Spatial child = createNestedQuad(nestLevel - 1, index + (i + 1));
 
             if (child instanceof TerrainPatch) {
                 TerrainPatch patchChild = (TerrainPatch) child;
@@ -118,16 +118,16 @@ public class TerrainQuadTest {
 
     @Test
     public void testNestStructure() {
-        Spatial leaf = createNestedQuad(0);
+        Spatial leaf = createNestedQuad(0, "");
         assertTrue(leaf instanceof TerrainPatch);
 
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1, "");
         assertEquals(root.getChildren().size(), 4);
         for (int i = 0; i < 4; i++) {
             assertTrue(root.getChild(i) instanceof TerrainPatch); // Ensure children of root are leafs
         }
 
-        root = (FakeTerrainQuad) createNestedQuad(2);
+        root = (FakeTerrainQuad) createNestedQuad(2, "");
         assertEquals(root.getChildren().size(), 4);
         for (int i = 0; i < 4; i++) {
             assertTrue(root.getChild(i) instanceof TerrainQuad); // Ensure children of root are not leafs
@@ -147,10 +147,10 @@ public class TerrainQuadTest {
     @Test
     public void testFindQuadNeighbourFinder() {
         FakeTerrainQuad[] roots = new FakeTerrainQuad[4];
-        roots[0] = (FakeTerrainQuad) createNestedQuad(2);
-        roots[1] = (FakeTerrainQuad) createNestedQuad(2);
-        roots[2] = (FakeTerrainQuad) createNestedQuad(2);
-        roots[3] = (FakeTerrainQuad) createNestedQuad(2);
+        roots[0] = (FakeTerrainQuad) createNestedQuad(2, "");
+        roots[1] = (FakeTerrainQuad) createNestedQuad(2, "");
+        roots[2] = (FakeTerrainQuad) createNestedQuad(2, "");
+        roots[3] = (FakeTerrainQuad) createNestedQuad(2, "");
 
         NeighbourFinder nf = new TestNeighbourFinder(roots[0], roots[1], roots[2], roots[3]);
         for (FakeTerrainQuad root : roots) {
@@ -171,7 +171,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindRightQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad topRight = (FakeTerrainQuad) root.getQuad(3);
 
@@ -191,7 +191,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindDownQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad downLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
@@ -211,7 +211,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindLeftQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad topRightChild = (FakeTerrainQuad) root.getQuad(3);
 
@@ -231,7 +231,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindTopQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(3, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad) root.getQuad(1);
         FakeTerrainQuad downLeftChild = (FakeTerrainQuad) root.getQuad(2);
 
@@ -251,7 +251,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testGetPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1, "");
         assertNull(root.getPatch(0));
         for (int i = 1; i <= 4; i++) {
             TerrainPatch child = root.getPatch(i);
@@ -263,7 +263,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindRightPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
         FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
 
@@ -301,7 +301,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindDownPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
         FakeTerrainQuad bottomLeftChild = (FakeTerrainQuad)root.getQuad(2);
 
@@ -339,7 +339,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindLeftPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2, "");
         FakeTerrainQuad topLeftChild = (FakeTerrainQuad)root.getQuad(1);
         FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
 
@@ -377,7 +377,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindTopPatch() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2, "");
         FakeTerrainQuad topRightChild = (FakeTerrainQuad)root.getQuad(3);
         FakeTerrainQuad bottomRightChild = (FakeTerrainQuad)root.getQuad(4);
 
@@ -415,7 +415,7 @@ public class TerrainQuadTest {
 
     @Test
     public void testFindQuad() {
-        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2);
+        FakeTerrainQuad root = (FakeTerrainQuad)createNestedQuad(2, "");
 
         assertEquals(root.quadrant, 0);
 
@@ -444,11 +444,11 @@ public class TerrainQuadTest {
      */
     @Test
     public void testCalculateLod() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1, "");
         assertFalse(root.hasLodChanged(location, updates, lodCalculator));
         assertTrue(root.hasLodChanged(location, updates, fakeLodCalculator));
 
-        FakeTerrainQuad leaf = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad leaf = (FakeTerrainQuad) createNestedQuad(1, "");
         leaf.attachChild(children[1]);
         assertTrue(leaf.hasLodChanged(location, updates, fakeLodCalculator));
     }
@@ -631,5 +631,133 @@ public class TerrainQuadTest {
         fakeCreateQuad(parentTerrainQuad, children);
 
         assertEquals(Float.NaN, parentTerrainQuad.getHeight(0, 0, 0.0f, 0.0f), 0.0f);
+    }
+
+
+    /**
+     * Test for TerrainQuads fixEdges method.
+     * Both situations of updated and non-updated LODs are covered.
+     * A typical situation is covered with assertions.
+     */
+    @Test
+    public void testFixEdges() {
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2, "");
+        HashMap<String,UpdatedTerrainPatch> updated = new HashMap<>();
+
+        assertNotNull(root.getChildren());
+
+        // Create UTPs and add it to the updated var
+        for (int i = 1; i <= root.getQuad(1).getChildren().size(); i++) {
+            UpdatedTerrainPatch utp = new UpdatedTerrainPatch(root.getQuad(1).getPatch(i));
+            updated.put(root.getQuad(1).getPatch(i).getName(), utp);
+        }
+
+        // Copy keys
+        Set<String> oldKeyset = new HashSet<>();
+        for (String s : updated.keySet()) {
+            oldKeyset.add(s);
+        }
+
+        // Without any changes in LOD, keyset should remain the same
+        root.fixEdges(updated);
+        assertTrue(updated.keySet().equals(oldKeyset));
+
+        // Change LOD for all patches in quad 1.
+        for (int i = root.getQuad(1).getChildren().size(); i > 0; i--) {
+            UpdatedTerrainPatch utp = updated.get(root.getQuad(1).getPatch(i).getName());
+            utp.setPreviousLod(1); // Dummy value
+            utp.setNewLod(2); // Dummy value
+        }
+
+        // Copy keys
+        oldKeyset.clear();
+        for (String s : updated.keySet()) {
+            oldKeyset.add(s);
+        }
+
+        root.fixEdges(updated);
+
+        // Make sure new keyset is different
+        assertFalse(updated.keySet().equals(oldKeyset));
+
+        // Extract newly updated keys
+        updated.keySet().removeAll(oldKeyset);
+
+        // Assert new keys
+        assertTrue(updated.keySet().contains("21"));
+        assertTrue(updated.keySet().contains("23"));
+        assertTrue(updated.keySet().contains("31"));
+        assertTrue(updated.keySet().contains("32"));
+    }
+
+    /**
+     * Test for TerrainQuads deprecated findNeighboursLod method.
+     * It tests for both an empty UpdatedTerrainPatch set and a full one.
+     * Assertions are made to verify that the LODs are set correctly.
+     */
+    @Test
+    public void testFindNeighboursLod() {
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2, "");
+        HashMap<String,UpdatedTerrainPatch> updated = new HashMap<>();
+
+        assertNotNull(root.getChildren());
+
+        // Call method with empty setof UTPs
+        root.findNeighboursLod(updated);
+
+        // Check if all patches are updated
+        for (int i = 1; i <= root.getChildren().size(); i++) {
+            for (int j = 1; j <= root.getQuad(i).getChildren().size(); j++) {
+                TerrainPatch tp = root.getQuad(i).getPatch(j);
+                assertTrue(updated.containsKey(tp.getName()));
+            }
+        }
+
+        // Set random LOD to ensure proper assertions.
+        for (int i = 1; i <= root.getChildren().size(); i++) {
+            for (int j = 1; j <= root.getQuad(i).getChildren().size(); j++) {
+                UpdatedTerrainPatch utp = updated.get(root.getQuad(i).getPatch(j).getName());
+                utp.setPreviousLod((int)(Math.random() * 100)); // Dummy value
+                utp.setNewLod((int)(Math.random() * 100)); // Dummy value
+            }
+        }
+
+        root.findNeighboursLod(updated);
+
+        // Check if all patches are updated.
+        for (int i = 1; i <= root.getChildren().size(); i++) {
+            for (int j = 1; j <= root.getQuad(i).getChildren().size(); j++) {
+                TerrainPatch tp = root.getQuad(i).getPatch(j);
+                UpdatedTerrainPatch utp = updated.get(tp.getName());
+
+                TerrainPatch left = tp.findPatch(DIR_LEFT);
+                if (left != null) {
+                    UpdatedTerrainPatch leftUtp = updated.get(left.getName());
+                    assertEquals(utp.getLeftLod(), leftUtp.getNewLod());
+                    assertEquals(leftUtp.getRightLod(), utp.getNewLod());
+                }
+
+                TerrainPatch right = tp.findPatch(DIR_RIGHT);
+                if (right != null) {
+                    UpdatedTerrainPatch rightUtp = updated.get(right.getName());
+                    assertEquals(utp.getRightLod(), rightUtp.getNewLod());
+                    assertEquals(rightUtp.getLeftLod(), utp.getNewLod());
+                }
+
+                TerrainPatch top = tp.findPatch(DIR_TOP);
+                if (top != null) {
+                    UpdatedTerrainPatch topUtp = updated.get(top.getName());
+                    assertEquals(utp.getTopLod(), topUtp.getNewLod());
+                    assertEquals(topUtp.getBottomLod(), utp.getNewLod());
+                }
+
+                TerrainPatch down = tp.findPatch(DIR_DOWN);
+                if (down != null) {
+                    UpdatedTerrainPatch downUtp = updated.get(down.getName());
+                    assertEquals(utp.getBottomLod(), downUtp.getNewLod());
+                    assertEquals(downUtp.getTopLod(), utp.getNewLod());
+                }
+            }
+        }
     }
 }

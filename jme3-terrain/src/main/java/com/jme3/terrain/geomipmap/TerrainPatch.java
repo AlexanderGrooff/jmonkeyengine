@@ -696,6 +696,14 @@ public class TerrainPatch extends Geometry {
         return normal;
     }
 
+    public TerrainPatch[] getNeighbours() {
+        TerrainPatch[] neighbours = new TerrainPatch[4];
+        neighbours[DIR_RIGHT] = this.rightNeighbour;
+        neighbours[DIR_DOWN] = this.bottomNeighbour;
+        neighbours[DIR_TOP] = this.topNeighbour;
+        neighbours[DIR_LEFT] = this.leftNeighbour;
+        return neighbours;
+    }
 
     /**
      * <code>createQuadPatch</code> creates a terrain patch according to the provided patchNumber.
@@ -743,7 +751,6 @@ public class TerrainPatch extends Geometry {
 
         return new TerrainPatch(terrainQuad.getName() + "Patch" + patchNumber, split, terrainQuad.stepScale, heightBlock, origin, terrainQuad.totalSize, tempOffset, terrainQuad.offsetAmount);
     }
-
 
     protected float getHeight(int x, int z, float xm, float zm) {
         return geomap.getHeight(x, z, xm, zm);
