@@ -707,6 +707,15 @@ public class TerrainPatch extends Geometry {
         return normal;
     }
 
+    public TerrainPatch[] getNeighbours() {
+        TerrainPatch[] neighbours = new TerrainPatch[4];
+        neighbours[DIR_RIGHT] = this.rightNeighbour;
+        neighbours[DIR_DOWN] = this.bottomNeighbour;
+        neighbours[DIR_TOP] = this.topNeighbour;
+        neighbours[DIR_LEFT] = this.leftNeighbour;
+        return neighbours;
+    }
+
     protected float getHeight(int x, int z, float xm, float zm) {
         return geomap.getHeight(x,z,xm,zm);
     }

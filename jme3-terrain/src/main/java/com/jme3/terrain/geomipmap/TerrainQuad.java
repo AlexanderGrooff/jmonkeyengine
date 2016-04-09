@@ -483,29 +483,15 @@ public class TerrainQuad extends Node implements Terrain {
                     if(utp != null && utp.lodChanged()) {
                         setPatchNeighbourReferences(patch);
 
-                        TerrainPatch right = patch.rightNeighbour;
-                        TerrainPatch down = patch.bottomNeighbour;
-                        TerrainPatch top = patch.topNeighbour;
-                        TerrainPatch left = patch.leftNeighbour;
-                        if (right != null) {
-                            UpdatedTerrainPatch utpR = getUpdatedTerrainPatch(updated, right);
-                            utpR.setLeftLod(utp.getNewLod());
-                            utpR.setFixEdges(true);
-                        }
-                        if (down != null) {
-                            UpdatedTerrainPatch utpD = getUpdatedTerrainPatch(updated, down);
-                            utpD.setTopLod(utp.getNewLod());
-                            utpD.setFixEdges(true);
-                        }
-                        if (top != null){
-                            UpdatedTerrainPatch utpT = getUpdatedTerrainPatch(updated, top);
-                            utpT.setBottomLod(utp.getNewLod());
-                            utpT.setFixEdges(true);
-                        }
-                        if (left != null){
-                            UpdatedTerrainPatch utpL = getUpdatedTerrainPatch(updated, left);
-                            utpL.setRightLod(utp.getNewLod());
-                            utpL.setFixEdges(true);
+                        TerrainPatch[] neighbours = patch.getNeighbours();
+
+                        for (int direction = 0; direction < 4; direction++) {
+                            int oppositeDirection = (direction + 2) > 4 ? 4 - (direction + 2) : direction + 2;
+                            if (neighbours[direction] != null) {
+                                UpdatedTerrainPatch utpR = getUpdatedTerrainPatch(updated, neighbours[direction]);
+                                utpR.setLod(utp.getNewLod(), oppositeDirection);
+                                utpR.setFixEdges(true);
+                            }
                         }
                     }
                 }
