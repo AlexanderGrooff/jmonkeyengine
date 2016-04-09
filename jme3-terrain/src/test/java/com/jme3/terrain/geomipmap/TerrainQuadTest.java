@@ -401,6 +401,11 @@ public class TerrainQuadTest {
         }
     }
 
+    /**
+     * Test for TerrainQuads fixEdges method.
+     * Both situations of updated and non-updated LODs are covered.
+     * A typical situation is covered with assertions.
+     */
     @Test
     public void testFixEdges() {
         FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2, "");
@@ -450,5 +455,76 @@ public class TerrainQuadTest {
         assertTrue(updated.keySet().contains("23"));
         assertTrue(updated.keySet().contains("31"));
         assertTrue(updated.keySet().contains("32"));
+    }
+
+    /**
+     * Test for TerrainQuads deprecated findNeighboursLod method.
+     * It tests for both an empty UpdatedTerrainPatch set and a full one.
+     * Assertions are made to verify that the LODs are set correctly.
+     */
+    @Test
+    public void testFindNeighboursLod() {
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(2, "");
+        HashMap<String,UpdatedTerrainPatch> updated = new HashMap<>();
+
+        assertNotNull(root.getChildren());
+
+        // Call method with empty setof UTPs
+        root.findNeighboursLod(updated);
+
+        // Check if all patches are updated
+        for (int i = 1; i <= root.getChildren().size(); i++) {
+            for (int j = 1; j <= root.getQuad(i).getChildren().size(); j++) {
+                TerrainPatch tp = root.getQuad(i).getPatch(j);
+                assertTrue(updated.containsKey(tp.getName()));
+            }
+        }
+
+        // Set random LOD to ensure proper assertions.
+        for (int i = 1; i <= root.getChildren().size(); i++) {
+            for (int j = 1; j <= root.getQuad(i).getChildren().size(); j++) {
+                UpdatedTerrainPatch utp = updated.get(root.getQuad(i).getPatch(j).getName());
+                utp.setPreviousLod((int)(Math.random() * 100)); // Dummy value
+                utp.setNewLod((int)(Math.random() * 100)); // Dummy value
+            }
+        }
+
+        root.findNeighboursLod(updated);
+
+        // Check if all patches are updated.
+        for (int i = 1; i <= root.getChildren().size(); i++) {
+            for (int j = 1; j <= root.getQuad(i).getChildren().size(); j++) {
+                TerrainPatch tp = root.getQuad(i).getPatch(j);
+                UpdatedTerrainPatch utp = updated.get(tp.getName());
+
+                TerrainPatch left = tp.findPatch(DIR_LEFT);
+                if (left != null) {
+                    UpdatedTerrainPatch leftUtp = updated.get(left.getName());
+                    assertEquals(utp.getLeftLod(), leftUtp.getNewLod());
+                    assertEquals(leftUtp.getRightLod(), utp.getNewLod());
+                }
+
+                TerrainPatch right = tp.findPatch(DIR_RIGHT);
+                if (right != null) {
+                    UpdatedTerrainPatch rightUtp = updated.get(right.getName());
+                    assertEquals(utp.getRightLod(), rightUtp.getNewLod());
+                    assertEquals(rightUtp.getLeftLod(), utp.getNewLod());
+                }
+
+                TerrainPatch top = tp.findPatch(DIR_TOP);
+                if (top != null) {
+                    UpdatedTerrainPatch topUtp = updated.get(top.getName());
+                    assertEquals(utp.getTopLod(), topUtp.getNewLod());
+                    assertEquals(topUtp.getBottomLod(), utp.getNewLod());
+                }
+
+                TerrainPatch down = tp.findPatch(DIR_DOWN);
+                if (down != null) {
+                    UpdatedTerrainPatch downUtp = updated.get(down.getName());
+                    assertEquals(utp.getBottomLod(), downUtp.getNewLod());
+                    assertEquals(downUtp.getTopLod(), utp.getNewLod());
+                }
+            }
+        }
     }
 }
