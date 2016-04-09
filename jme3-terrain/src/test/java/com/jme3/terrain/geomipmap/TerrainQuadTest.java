@@ -408,32 +408,42 @@ public class TerrainQuadTest {
 
         assertNotNull(root.getChildren());
 
+        // Create UTPs and add it to the updated var
         for (int i = 1; i <= root.getQuad(1).getChildren().size(); i++) {
-            System.out.println("Adding child " + i + " with name " + root.getQuad(1).getPatch(i).getName());
-
             UpdatedTerrainPatch utp = new UpdatedTerrainPatch(root.getQuad(1).getPatch(i));
             updated.put(root.getQuad(1).getPatch(i).getName(), utp);
         }
 
-        // Set changed LOD for all patches in quad 1.
-        for (int i = root.getQuad(1).getChildren().size(); i > 0; i--) {
-            System.out.println("Update LOD of patch " + i);
+        // Copy keys
+        Set<String> oldKeyset = new HashSet<>();
+        for (String s : updated.keySet()) {
+            oldKeyset.add(s);
+        }
 
+        // Without any changes in LOD, keyset should remain the same
+        root.fixEdges(updated);
+        assertTrue(updated.keySet().equals(oldKeyset));
+
+        // Change LOD for all patches in quad 1.
+        for (int i = root.getQuad(1).getChildren().size(); i > 0; i--) {
             UpdatedTerrainPatch utp = updated.get(root.getQuad(1).getPatch(i).getName());
             utp.setPreviousLod(1); // Dummy value
             utp.setNewLod(2); // Dummy value
         }
 
         // Copy keys
-        Set<String> unfixedKeyset = new HashSet<>();
+        oldKeyset.clear();
         for (String s : updated.keySet()) {
-            unfixedKeyset.add(s);
+            oldKeyset.add(s);
         }
 
         root.fixEdges(updated);
 
+        // Make sure new keyset is different
+        assertFalse(updated.keySet().equals(oldKeyset));
+
         // Extract newly updated keys
-        updated.keySet().removeAll(unfixedKeyset);
+        updated.keySet().removeAll(oldKeyset);
 
         // Assert new keys
         assertTrue(updated.keySet().contains("21"));
