@@ -388,6 +388,11 @@ public class TerrainQuad extends Node implements Terrain {
         return lodChanged;
     }
 
+    /**
+     * Look up and set the LOD of the TerrainQuads children.
+     * This will create an UpdatedTerrainPatch for every TerrainPatch child if there are none made so far.
+     * @param updated TerrainPatches that have an updated LOD.
+     */
     protected synchronized void findNeighboursLod(HashMap<String,UpdatedTerrainPatch> updated) {
         if (children != null) {
             for (int x = children.size(); --x >= 0;) {
@@ -453,6 +458,7 @@ public class TerrainQuad extends Node implements Terrain {
     /**
      * Find any neighbours that should have their edges seamed because another neighbour
      * changed its LOD to a greater value (less detailed)
+     * @param updated TerrainPatches that have an updated LOD.
      */
     protected synchronized void fixEdges(HashMap<String,UpdatedTerrainPatch> updated) {
         if (children != null) {
