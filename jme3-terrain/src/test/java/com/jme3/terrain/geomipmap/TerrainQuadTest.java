@@ -9,17 +9,12 @@ import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.geomipmap.lodcalc.LodCalculator;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HillHeightMap;
-import com.jme3.scene.control.UpdateControl;
-import com.jme3.terrain.Terrain;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -449,11 +444,11 @@ public class TerrainQuadTest {
      */
     @Test
     public void testCalculateLod() {
-        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad root = (FakeTerrainQuad) createNestedQuad(1, "");
         assertFalse(root.hasLodChanged(location, updates, lodCalculator));
         assertTrue(root.hasLodChanged(location, updates, fakeLodCalculator));
 
-        FakeTerrainQuad leaf = (FakeTerrainQuad) createNestedQuad(1);
+        FakeTerrainQuad leaf = (FakeTerrainQuad) createNestedQuad(1, "");
         leaf.attachChild(children[1]);
         assertTrue(leaf.hasLodChanged(location, updates, fakeLodCalculator));
     }
