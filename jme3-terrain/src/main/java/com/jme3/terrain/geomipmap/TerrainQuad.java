@@ -398,38 +398,22 @@ public class TerrainQuad extends Node implements Terrain {
                     TerrainPatch patch = (TerrainPatch) child;
                     UpdatedTerrainPatch utp = updated.get(patch.getName());
 
-
                     setPatchNeighbourReferences(patch);
-                    TerrainPatch right = patch.rightNeighbour;
-                    TerrainPatch down = patch.bottomNeighbour;
-                    TerrainPatch left = patch.leftNeighbour;
-                    TerrainPatch top = patch.topNeighbour;
+                    TerrainPatch[] neighbours = patch.getNeighbours();
 
                     if (utp == null) {
                         utp = new UpdatedTerrainPatch(patch, patch.lod);
                         updated.put(utp.getName(), utp);
                     }
 
-                    if (right != null) {
-                        UpdatedTerrainPatch utpR = getUpdatedTerrainPatch(updated, right);
-                        utp.setRightLod(utpR.getNewLod());
-                        utpR.setLeftLod(utp.getNewLod());
-                    }
-                    if (down != null) {
-                        UpdatedTerrainPatch utpD = getUpdatedTerrainPatch(updated, down);
-                        utp.setBottomLod(utpD.getNewLod());
-                        utpD.setTopLod(utp.getNewLod());
-                    }
-                    
-                    if (left != null) {
-                        UpdatedTerrainPatch utpL = getUpdatedTerrainPatch(updated, left);
-                        utp.setLeftLod(utpL.getNewLod());
-                        utpL.setRightLod(utp.getNewLod());
-                    }
-                    if (top != null) {
-                        UpdatedTerrainPatch utpT = getUpdatedTerrainPatch(updated, top);
-                        utp.setTopLod(utpT.getNewLod());
-                        utpT.setBottomLod(utp.getNewLod());
+                    for (int direction = 0; direction < 4; direction++) {
+                        if (neighbours[direction] != null) {
+                            int oppositeDirection = (direction + 2) > 4 ? 4 - (direction + 2) : direction + 2;
+
+                            UpdatedTerrainPatch neighbourUtp = getUpdatedTerrainPatch(updated, neighbours[direction]);
+                            utp.setLod(neighbourUtp.getNewLod(), direction);
+                            neighbourUtp.setLod(utp.getNewLod(), oppositeDirection);
+                        }
                     }
                 }
             }
@@ -486,11 +470,12 @@ public class TerrainQuad extends Node implements Terrain {
                         TerrainPatch[] neighbours = patch.getNeighbours();
 
                         for (int direction = 0; direction < 4; direction++) {
-                            int oppositeDirection = (direction + 2) > 4 ? 4 - (direction + 2) : direction + 2;
                             if (neighbours[direction] != null) {
-                                UpdatedTerrainPatch utpR = getUpdatedTerrainPatch(updated, neighbours[direction]);
-                                utpR.setLod(utp.getNewLod(), oppositeDirection);
-                                utpR.setFixEdges(true);
+                                int oppositeDirection = (direction + 2) > 4 ? 4 - (direction + 2) : direction + 2;
+
+                                UpdatedTerrainPatch neighbourUtp = getUpdatedTerrainPatch(updated, neighbours[direction]);
+                                neighbourUtp.setLod(utp.getNewLod(), oppositeDirection);
+                                neighbourUtp.setFixEdges(true);
                             }
                         }
                     }
